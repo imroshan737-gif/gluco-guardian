@@ -17,6 +17,7 @@ export default function AuthPage() {
   const [form, setForm] = useState({ fullName: '', email: '', password: '' });
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [diabetesDropdownOpen, setDiabetesDropdownOpen] = useState(false);
 
   // Step tracking: 1 = basic form, 2 = profile popup, 3 = meal/medication popup
   const [step, setStep] = useState(1);
@@ -37,6 +38,11 @@ export default function AuthPage() {
 
   const navigate = useNavigate();
   useEffect(() => { if (getSession()) navigate('/dashboard'); }, []);
+  useEffect(() => {
+  const handleClickOutside = () => setDiabetesDropdownOpen(false);
+  if (diabetesDropdownOpen) document.addEventListener('click', handleClickOutside);
+  return () => document.removeEventListener('click', handleClickOutside);
+}, [diabetesDropdownOpen]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleSignup = (e: React.FormEvent) => {
@@ -213,13 +219,43 @@ export default function AuthPage() {
             <div className="space-y-3">
               <input type="number" placeholder="Age" value={profileData.age}
                 onChange={e => setProfileData(p => ({ ...p, age: e.target.value }))} className={inputClass} />
-              <select value={profileData.diabetesType}
-                onChange={e => setProfileData(p => ({ ...p, diabetesType: e.target.value }))} className={inputClass}>
-                <option value="Type 1">Type 1 Diabetes</option>
-                <option value="Type 2">Type 2 Diabetes</option>
-                <option value="Pre-diabetic">Pre-diabetic</option>
-                <option value="At Risk">At Risk</option>
-              </select>
+              <div className="relative">
+  <button
+    type="button"
+    onClick={() => setDiabetesDropdownOpen(p => !p)}
+    className={inputClass}
+    style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+  >
+    <span>{profileData.diabetesType}</span>
+    <span style={{ color: 'rgba(255,255,255,0.4)' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
+  </button>
+
+  {diabetesDropdownOpen && (
+    <div
+      className="absolute w-full z-50 rounded-lg overflow-hidden"
+      style={{ background: '#0f0f1a', border: '1px solid rgba(0,245,212,0.2)', top: '110%' }}
+    >
+      {['Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
+        <div
+          key={option}
+          onClick={() => {
+            setProfileData(p => ({ ...p, diabetesType: option }));
+            setDiabetesDropdownOpen(false);
+          }}
+          className="px-4 py-3 text-sm font-body cursor-pointer transition-all"
+          style={{
+            color: profileData.diabetesType === option ? '#00f5d4' : '#ffffff',
+            background: profileData.diabetesType === option ? 'rgba(0,245,212,0.1)' : 'transparent',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,245,212,0.08)')}
+          onMouseLeave={e => (e.currentTarget.style.background = profileData.diabetesType === option ? 'rgba(0,245,212,0.1)' : 'transparent')}
+        >
+          {option}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
               <input type="text" placeholder="Blood Pressure (e.g. 120/80 mmHg)" value={profileData.bloodPressure}
                 onChange={e => setProfileData(p => ({ ...p, bloodPressure: e.target.value }))} className={inputClass} />
               <div className="flex gap-3">
