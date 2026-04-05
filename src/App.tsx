@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Predictor from "./pages/Predictor";
 import Timeline from "./pages/Timeline";
 import Settings from "./pages/Settings";
+import HealthPlan from "./pages/HealthPlan";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/predictor" element={<Predictor />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/health-plan" element={<HealthPlan />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
