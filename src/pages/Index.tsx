@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { Line } from "react-chartjs-2";
@@ -31,6 +31,13 @@ export default function LandingPage() {
   const [demoInputs, setDemoInputs] = useState({ mealTime: '2', insulinDose: '6', sleepHours: '5', activityLevel: 'moderate' });
   const [demoResult, setDemoResult] = useState<null | { labels: string[]; data: number[]; predicted: number[] }>(null);
   const demoRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+useEffect(() => {
+  const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, []);
 
   const runDemo = () => {
     const labels: string[] = [];
@@ -84,8 +91,26 @@ export default function LandingPage() {
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <ParticlesBackground />
       <div className="max-w-4xl mx-auto px-4 py-20 flex flex-col items-center text-center relative z-10">
-  <p className="font-heading text-primary text-xs tracking-[0.3em] uppercase mb-4 animate-fade-slide-up">Predict · Protect · Prevail</p>
-  <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
+<div
+  className="transition-all duration-700 overflow-hidden"
+  style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem' }}
+>
+  <h1
+    className="font-heading font-black text-foreground text-center"
+    style={{
+      fontSize: 'clamp(3rem, 10vw, 7rem)',
+      letterSpacing: '-0.03em',
+      lineHeight: 1,
+      background: 'linear-gradient(135deg, #ffffff 30%, #00F5D4 100%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+    }}
+  >
+    GlucoGuardian
+  </h1>
+</div>
+<p className="font-heading text-primary text-xs tracking-[0.3em] uppercase mb-4 animate-fade-slide-up">Predict · Protect · Prevail</p>  <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
     Your body knows <span className="text-primary text-glow">before you do.</span>
   </h1>
   <p className="text-foreground/60 font-body text-lg mb-10 max-w-2xl">
