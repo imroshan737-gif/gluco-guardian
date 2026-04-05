@@ -8,6 +8,7 @@ import StatusBar from "@/components/StatusBar";
 import RiskGauge from "@/components/RiskGauge";
 import GlassTiltCard from "@/components/GlassTiltCard";
 import QuickLogModal from "@/components/QuickLogModal";
+import { useRef } from "react";
 import {
   getSession, getLatestLog, getRiskLevel, getRiskLabel,
   getInsulinStatus, getTimeSince, generatePredictionData, getLogs
@@ -20,10 +21,41 @@ export default function Dashboard() {
   const [logModalOpen, setLogModalOpen] = useState(false);
   const [timeRange, setTimeRange] = useState('3H');
   const [, setRefresh] = useState(0);
+  const [showMedPanel, setShowMedPanel] = useState(false);
+const [mealPopup, setMealPopup] = useState<{ meal: string; time: string } | null>(null);
+const [mealChoices, setMealChoices] = useState<Record<string, 'yes' | 'no'>>({});
+const mealCheckedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => { if (!getSession()) navigate('/auth'); }, []);
 
   const session = getSession();
+  // ── Meal time reminder checker ─────────────────────────────────────────────
+useEffect(() => {
+  const interval = setInterval(() => {
+    const user = getSession();
+    if (!user?.mealTimes) return;
+
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    const meals = [
+      { meal: 'Breakfast', time: user.mealTimes.breakfast },
+      { meal: 'Lunch',     time: user.mealTimes.lunch     },
+      { meal: 'Dinner',    time: user.mealTimes.dinner    },
+    ];
+
+    for (const { meal, time } of meals) {
+      const key = `${meal}-${time}-${now.toDateString()}`;
+      if (currentTime === time && !mealCheckedRef.current.has(key)) {
+        mealCheckedRef.current.add(key);
+        setMealPopup({ meal, time });
+        break;
+      }
+    }
+  }, 30000); // checks every 30 seconds
+
+  return () => clearInterval(interval);
+}, []);
   const latestLog = getLatestLog();
   const riskScore = latestLog?.riskScore ?? 0;
   const riskLevel = getRiskLevel(riskScore);
@@ -155,7 +187,159 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+{/* ── Floating Medication Icon ─────────────────────────────────────── */}
+<button
+  onClick={() => setShowMedPanel(true)}
+  className="fixed right-5 bottom-24 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+  style={{ background: 'rgba(0,245,212,0.15)', border: '1px solid rgba(0,245,212,0.4)' }}
+  title="My Medications"
+>
+  <span style={{ fontSize: 24 }}>💊</span>
+  {(session?.medications?.length ?? 0) > 0 && (
+    <span
+      className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-heading flex items-center justify-center"
+      style={{ background: '#00f5d4', color: '#000' }}
+    >
+      {session.medications.length}
+    </span>
+  )}
+</button>
 
+{/* ── Medication Side Panel ─────────────────────────────────────────── */}
+{showMedPanel && (
+  <div
+    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-end"
+    onClick={() => setShowMedPanel(false)}
+  >
+    <div
+      className="glass-card w-80 h-full p-6 overflow-y-auto rounded-none rounded-l-2xl"
+      onClick={e => e.stopPropagation()}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="font-heading text-lg font-bold">My Medications 💊</h3>
+        <button
+          onClick={() => setShowMedPanel(false)}
+          className="text-foreground/40 hover:text-foreground transition-colors text-xl"
+        >✕</button>
+      </div>
+
+      {/* Meal Times Summary */}
+      <div className="mb-6">
+        <p className="text-xs text-primary font-heading tracking-widest uppercase mb-3">Meal Schedule</p>
+        {[
+          { label: '🌅 Breakfast', time: session?.mealTimes?.breakfast },
+          { label: '☀️  Lunch',     time: session?.mealTimes?.lunch     },
+          { label: '🌙 Dinner',    time: session?.mealTimes?.dinner    },
+        ].map(({ label, time }) => (
+          <div key={label} className="flex justify-between items-center py-2 border-b border-primary/10">
+            <span className="text-sm font-body text-foreground/60">{label}</span>
+            <span className="text-sm font-heading text-primary">{time ?? '—'}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Medications List */}
+      {(session?.medications?.length ?? 0) > 0 ? (
+        <div>
+          <p className="text-xs text-primary font-heading tracking-widest uppercase mb-3">Medicines</p>
+          {session.medications.map((med: any, i: number) => {
+            const mealNames = ['Breakfast', 'Lunch', 'Dinner'];
+            const activeMeals = med.schedule
+              .split('-')
+              .map((v: string, idx: number) => v === '1' ? mealNames[idx] : null)
+              .filter(Boolean)
+              .join(' & ');
+            return (
+              <div key={i} className="bg-muted/20 border border-primary/10 rounded-xl p-4 mb-3">
+                <p className="font-heading text-sm text-foreground mb-1">{med.name}</p>
+                <p className="text-xs text-foreground/40 font-body">📅 {activeMeals || 'No schedule set'}</p>
+                <p className="text-xs text-foreground/40 font-body mt-1">
+                  🕐 {med.timing === 'before' ? 'Before food' : 'After food'}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-sm text-foreground/30 font-body text-center mt-8">
+          No medications added
+        </p>
+      )}
+
+      {/* Past Meal Choices */}
+      {Object.keys(mealChoices).length > 0 && (
+        <div className="mt-6">
+          <p className="text-xs text-primary font-heading tracking-widest uppercase mb-3">Today's Meal Log</p>
+          {Object.entries(mealChoices).map(([meal, choice]) => (
+            <div key={meal} className="flex justify-between items-center py-2 border-b border-primary/10">
+              <span className="text-sm font-body text-foreground/60">{meal}</span>
+              <span className={`text-xs font-heading px-2 py-1 rounded-full ${choice === 'yes' ? 'bg-primary/20 text-primary' : 'bg-destructive/20 text-destructive'}`}>
+                {choice === 'yes' ? '✓ Had meal' : '✗ Skipped'}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+{/* ── Meal Time Popup Reminder ──────────────────────────────────────── */}
+{mealPopup && (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="glass-card p-8 w-full max-w-sm text-center">
+      <div className="text-5xl mb-4">
+        {mealPopup.meal === 'Breakfast' ? '🌅' : mealPopup.meal === 'Lunch' ? '☀️' : '🌙'}
+      </div>
+      <h3 className="font-heading text-xl font-bold mb-2">
+        {mealPopup.meal} Time!
+      </h3>
+      <p className="text-foreground/50 text-sm font-body mb-6">
+        It's {mealPopup.time}. Did you have your {mealPopup.meal.toLowerCase()}?
+      </p>
+
+      <div className="flex gap-3">
+        <button
+          onClick={() => {
+            setMealChoices(p => ({ ...p, [mealPopup.meal]: 'yes' }));
+            setMealPopup(null);
+          }}
+          className="flex-1 py-3 rounded-xl font-heading text-sm font-bold transition-all hover:scale-105"
+          style={{ background: 'rgba(0,245,212,0.2)', border: '1px solid rgba(0,245,212,0.5)', color: '#00f5d4' }}
+        >
+          ✓ Yes I did
+        </button>
+        <button
+          onClick={() => {
+            setMealChoices(p => ({ ...p, [mealPopup.meal]: 'no' }));
+            setMealPopup(null);
+          }}
+          className="flex-1 py-3 rounded-xl font-heading text-sm font-bold transition-all hover:scale-105"
+          style={{ background: 'rgba(229,57,70,0.15)', border: '1px solid rgba(229,57,70,0.4)', color: '#E63946' }}
+        >
+          ✗ Not yet
+        </button>
+      </div>
+
+      {/* Medication reminder for this meal */}
+      {(session?.medications ?? [])
+        .filter((med: any) => {
+          const idx = ['Breakfast', 'Lunch', 'Dinner'].indexOf(mealPopup.meal);
+          return idx !== -1 && med.schedule.split('-')[idx] === '1';
+        })
+        .map((med: any, i: number) => (
+          <div key={i} className="mt-4 p-3 rounded-xl text-left"
+            style={{ background: 'rgba(169,127,240,0.1)', border: '1px solid rgba(169,127,240,0.2)' }}>
+            <p className="text-xs font-heading text-purple-300">
+              💊 Remember: Take <strong>{med.name}</strong> {med.timing} your meal
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+)}
       <StatusBar />
       <QuickLogModal open={logModalOpen} onClose={() => { setLogModalOpen(false); setRefresh(r => r + 1); }} />
     </div>
