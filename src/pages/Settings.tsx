@@ -16,6 +16,8 @@ export default function Settings() {
     diabetesType: session?.diabetesType || 'Type 1',
     glucoseRange: session?.glucoseRange || '70–140',
     emergencyContactName: session?.emergencyContactName || '',
+    heightCm: session?.heightCm?.toString() || '',
+    weightKg: session?.weightKg?.toString() || '',
   });
   const [alerts, setAlerts] = useState(session?.alertPreferences || { sound: true, notification: true, vibration: false });
   const [sensitivity, setSensitivity] = useState(session?.aiSensitivity || 'balanced');
@@ -30,6 +32,8 @@ export default function Settings() {
       emergencyContactName: form.emergencyContactName,
       alertPreferences: alerts,
       aiSensitivity: sensitivity as any,
+      heightCm: form.heightCm ? parseFloat(form.heightCm) : undefined,
+      weightKg: form.weightKg ? parseFloat(form.weightKg) : undefined,
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -62,6 +66,7 @@ export default function Settings() {
         <h1 className="font-heading text-2xl mb-8 text-center"><span className="text-primary">Settings</span></h1>
 
         <div className="space-y-6">
+
           {/* Profile */}
           <GlassTiltCard>
             <h3 className="font-heading text-xs text-primary mb-4">HEALTH PROFILE</h3>
@@ -93,6 +98,18 @@ export default function Settings() {
                   <option value="140–180">140–180 mg/dL</option>
                   <option value="Above 180">Above 180 mg/dL</option>
                 </select>
+              </div>
+
+              {/* ── NEW: Height & Weight ── */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Height (cm)</label>
+                  <input type="number" placeholder="e.g. 170" value={form.heightCm} onChange={e => setForm(p => ({ ...p, heightCm: e.target.value }))} className={inputClass} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Weight (kg)</label>
+                  <input type="number" placeholder="e.g. 72" value={form.weightKg} onChange={e => setForm(p => ({ ...p, weightKg: e.target.value }))} className={inputClass} />
+                </div>
               </div>
             </div>
           </GlassTiltCard>
@@ -141,6 +158,13 @@ export default function Settings() {
             {saved ? '✓ Saved' : 'Save Changes'}
           </button>
 
+          {/* ── NEW: Health Plan Button — only shows after height/weight saved ── */}
+          {session?.heightCm && session?.weightKg && (
+            <button onClick={() => navigate('/health-plan')} className="w-full glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors" style={{ borderRadius: 12 }}>
+              💪 View My Health & Workout Plan
+            </button>
+          )}
+
           {/* Data Management */}
           <div className="flex gap-3">
             <button onClick={handleExport} className="flex-1 glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors" style={{ borderRadius: 12 }}>
@@ -150,6 +174,7 @@ export default function Settings() {
               🗑️ Reset All Data
             </button>
           </div>
+
         </div>
       </main>
       <StatusBar />
