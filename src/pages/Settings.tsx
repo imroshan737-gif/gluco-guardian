@@ -23,6 +23,9 @@ export default function Settings() {
   const [sensitivity, setSensitivity] = useState(session?.aiSensitivity || 'balanced');
   const [saved, setSaved] = useState(false);
 
+  // ── This is the fix — reads from form, not session ──
+  const hasBodyData = !!form.heightCm && !!form.weightKg;
+
   const handleSave = () => {
     updateProfile({
       fullName: form.fullName,
@@ -63,7 +66,9 @@ export default function Settings() {
     <div className="min-h-screen page-transition">
       <Navbar />
       <main className="pt-20 pb-16 px-4 max-w-2xl mx-auto">
-        <h1 className="font-heading text-2xl mb-8 text-center"><span className="text-primary">Settings</span></h1>
+        <h1 className="font-heading text-2xl mb-8 text-center">
+          <span className="text-primary">Settings</span>
+        </h1>
 
         <div className="space-y-6">
 
@@ -73,16 +78,29 @@ export default function Settings() {
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Full Name</label>
-                <input value={form.fullName} onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} className={inputClass} />
+                <input
+                  value={form.fullName}
+                  onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
+                  className={inputClass}
+                />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Age</label>
-                  <input type="number" value={form.age} onChange={e => setForm(p => ({ ...p, age: e.target.value }))} className={inputClass} />
+                  <input
+                    type="number"
+                    value={form.age}
+                    onChange={e => setForm(p => ({ ...p, age: e.target.value }))}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Diabetes Type</label>
-                  <select value={form.diabetesType} onChange={e => setForm(p => ({ ...p, diabetesType: e.target.value }))} className={inputClass}>
+                  <select
+                    value={form.diabetesType}
+                    onChange={e => setForm(p => ({ ...p, diabetesType: e.target.value }))}
+                    className={inputClass}
+                  >
                     <option value="Type 1">Type 1</option>
                     <option value="Type 2">Type 2</option>
                     <option value="Pre-diabetic">Pre-diabetic</option>
@@ -92,23 +110,37 @@ export default function Settings() {
               </div>
               <div>
                 <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Typical Glucose Range</label>
-                <select value={form.glucoseRange} onChange={e => setForm(p => ({ ...p, glucoseRange: e.target.value }))} className={inputClass}>
+                <select
+                  value={form.glucoseRange}
+                  onChange={e => setForm(p => ({ ...p, glucoseRange: e.target.value }))}
+                  className={inputClass}
+                >
                   <option value="Below 70">Below 70 mg/dL</option>
                   <option value="70–140">70–140 mg/dL</option>
                   <option value="140–180">140–180 mg/dL</option>
                   <option value="Above 180">Above 180 mg/dL</option>
                 </select>
               </div>
-
-              {/* ── NEW: Height & Weight ── */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Height (cm)</label>
-                  <input type="number" placeholder="e.g. 170" value={form.heightCm} onChange={e => setForm(p => ({ ...p, heightCm: e.target.value }))} className={inputClass} />
+                  <input
+                    type="number"
+                    placeholder="e.g. 170"
+                    value={form.heightCm}
+                    onChange={e => setForm(p => ({ ...p, heightCm: e.target.value }))}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Weight (kg)</label>
-                  <input type="number" placeholder="e.g. 72" value={form.weightKg} onChange={e => setForm(p => ({ ...p, weightKg: e.target.value }))} className={inputClass} />
+                  <input
+                    type="number"
+                    placeholder="e.g. 72"
+                    value={form.weightKg}
+                    onChange={e => setForm(p => ({ ...p, weightKg: e.target.value }))}
+                    className={inputClass}
+                  />
                 </div>
               </div>
             </div>
@@ -119,7 +151,12 @@ export default function Settings() {
             <h3 className="font-heading text-xs text-primary mb-4">EMERGENCY CONTACT</h3>
             <div>
               <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Contact Name</label>
-              <input placeholder="Name of emergency contact" value={form.emergencyContactName} onChange={e => setForm(p => ({ ...p, emergencyContactName: e.target.value }))} className={inputClass} />
+              <input
+                placeholder="Name of emergency contact"
+                value={form.emergencyContactName}
+                onChange={e => setForm(p => ({ ...p, emergencyContactName: e.target.value }))}
+                className={inputClass}
+              />
             </div>
           </GlassTiltCard>
 
@@ -129,8 +166,13 @@ export default function Settings() {
             <div className="space-y-3">
               {(['sound', 'notification', 'vibration'] as const).map(key => (
                 <label key={key} className="flex items-center justify-between cursor-pointer">
-                  <span className="text-sm font-body text-foreground/70 capitalize">{key === 'notification' ? 'Browser Notification' : key} Alert</span>
-                  <div className={`w-10 h-5 rounded-full transition-colors cursor-pointer relative ${alerts[key] ? 'bg-primary/40' : 'bg-muted'}`} onClick={() => setAlerts(p => ({ ...p, [key]: !p[key] }))}>
+                  <span className="text-sm font-body text-foreground/70 capitalize">
+                    {key === 'notification' ? 'Browser Notification' : key} Alert
+                  </span>
+                  <div
+                    className={`w-10 h-5 rounded-full transition-colors cursor-pointer relative ${alerts[key] ? 'bg-primary/40' : 'bg-muted'}`}
+                    onClick={() => setAlerts(p => ({ ...p, [key]: !p[key] }))}
+                  >
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${alerts[key] ? 'left-5 bg-primary' : 'left-0.5 bg-foreground/30'}`} />
                   </div>
                 </label>
@@ -143,13 +185,21 @@ export default function Settings() {
             <h3 className="font-heading text-xs text-primary mb-4">AI SENSITIVITY</h3>
             <div className="flex gap-2">
               {(['conservative', 'balanced', 'aggressive'] as const).map(s => (
-                <button key={s} onClick={() => setSensitivity(s)} className={`flex-1 py-2 text-xs font-heading rounded-lg transition-colors ${sensitivity === s ? 'bg-primary/20 text-primary' : 'glass-card text-foreground/40'}`}>
+                <button
+                  key={s}
+                  onClick={() => setSensitivity(s)}
+                  className={`flex-1 py-2 text-xs font-heading rounded-lg transition-colors ${sensitivity === s ? 'bg-primary/20 text-primary' : 'glass-card text-foreground/40'}`}
+                >
                   {s}
                 </button>
               ))}
             </div>
             <p className="text-[10px] text-foreground/30 font-body mt-2">
-              {sensitivity === 'conservative' ? 'Lower sensitivity — fewer alerts, higher thresholds.' : sensitivity === 'aggressive' ? 'Higher sensitivity — more alerts, lower thresholds.' : 'Balanced approach for most users.'}
+              {sensitivity === 'conservative'
+                ? 'Lower sensitivity — fewer alerts, higher thresholds.'
+                : sensitivity === 'aggressive'
+                ? 'Higher sensitivity — more alerts, lower thresholds.'
+                : 'Balanced approach for most users.'}
             </p>
           </GlassTiltCard>
 
@@ -158,19 +208,35 @@ export default function Settings() {
             {saved ? '✓ Saved' : 'Save Changes'}
           </button>
 
-          {/* ── NEW: Health Plan Button — only shows after height/weight saved ── */}
-          {session?.heightCm && session?.weightKg && (
-            <button onClick={() => navigate('/health-plan')} className="w-full glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors" style={{ borderRadius: 12 }}>
+          {/* Health Plan Button — shows as soon as height + weight are typed */}
+          {hasBodyData && (
+            <button
+              onClick={() => { handleSave(); navigate('/health-plan'); }}
+              className="w-full py-3 text-sm font-heading text-center transition-colors rounded-xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(0,245,212,0.15), rgba(169,127,240,0.15))',
+                border: '1px solid rgba(0,245,212,0.3)',
+                color: '#00F5D4',
+              }}
+            >
               💪 View My Health & Workout Plan
             </button>
           )}
 
           {/* Data Management */}
           <div className="flex gap-3">
-            <button onClick={handleExport} className="flex-1 glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors" style={{ borderRadius: 12 }}>
+            <button
+              onClick={handleExport}
+              className="flex-1 glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors"
+              style={{ borderRadius: 12 }}
+            >
               📤 Export Data as JSON
             </button>
-            <button onClick={handleReset} className="flex-1 glass-card py-3 text-sm font-heading text-destructive text-center hover:bg-destructive/10 transition-colors" style={{ borderRadius: 12 }}>
+            <button
+              onClick={handleReset}
+              className="flex-1 glass-card py-3 text-sm font-heading text-destructive text-center hover:bg-destructive/10 transition-colors"
+              style={{ borderRadius: 12 }}
+            >
               🗑️ Reset All Data
             </button>
           </div>
