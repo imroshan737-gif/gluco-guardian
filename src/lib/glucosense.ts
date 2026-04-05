@@ -39,8 +39,6 @@ export interface InsightCard {
   action: string;
 }
 
-// Weighted risk calculation
-// Insulin: 35%, Meal: 25%, Sleep: 20%, Stress: 10%, Activity: 10%
 export function calculateRiskScore(data: {
   insulinDose: number;
   insulinTime: string;
@@ -54,7 +52,6 @@ export function calculateRiskScore(data: {
 }): number {
   const now = new Date();
 
-  // Insulin factor (35%)
   const insulinTimeDiff = (now.getTime() - new Date(data.insulinTime).getTime()) / (1000 * 60 * 60);
   let insulinFactor = 0;
   if (data.insulinDose > 0) {
@@ -66,7 +63,6 @@ export function calculateRiskScore(data: {
     insulinFactor *= Math.min(data.insulinDose / 10, 1.5);
   }
 
-  // Meal factor (25%) — longer since meal = higher risk
   const mealTimeDiff = (now.getTime() - new Date(data.lastMealTime).getTime()) / (1000 * 60 * 60);
   let mealFactor = Math.min(mealTimeDiff / 6, 1);
   if (data.mealType === 'fasted') mealFactor = 1;
@@ -74,17 +70,14 @@ export function calculateRiskScore(data: {
   else if (data.mealType === 'protein-heavy') mealFactor *= 0.8;
   else if (data.mealType === 'mixed') mealFactor *= 0.65;
 
-  // Sleep factor (20%) — less sleep = higher risk
   let sleepFactor = 0;
   if (data.sleepHours < 5) sleepFactor = 0.9;
   else if (data.sleepHours < 6) sleepFactor = 0.7;
   else if (data.sleepHours < 7) sleepFactor = 0.4;
   else sleepFactor = 0.15;
 
-  // Stress factor (10%)
   const stressFactor = data.stressLevel / 10;
 
-  // Activity factor (10%)
   let activityFactor = 0;
   if (data.activityLevel === 'intense') activityFactor = 0.85;
   else if (data.activityLevel === 'moderate') activityFactor = 0.6;
@@ -93,7 +86,6 @@ export function calculateRiskScore(data: {
 
   let raw = (insulinFactor * 35 + mealFactor * 25 + sleepFactor * 20 + stressFactor * 10 + activityFactor * 10);
 
-  // Direct glucose reading override
   if (data.glucoseReading !== undefined && data.glucoseReading > 0) {
     if (data.glucoseReading < 55) raw = Math.max(raw, 90);
     else if (data.glucoseReading < 70) raw = Math.max(raw, 75);
@@ -101,7 +93,6 @@ export function calculateRiskScore(data: {
     else if (data.glucoseReading > 180) raw = Math.min(raw, 30);
   }
 
-  // Sensitivity adjustment
   const sens = data.sensitivity || 'balanced';
   if (sens === 'conservative') raw *= 0.8;
   else if (sens === 'aggressive') raw *= 1.2;
@@ -226,7 +217,6 @@ export function generatePredictionData(currentGlucose: number, riskScore: number
   const lower: number[] = [];
   const now = new Date();
 
-  // Past 2 hours (simulated from current reading)
   for (let i = -120; i <= 0; i += 15) {
     const t = new Date(now.getTime() + i * 60000);
     labels.push(t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
@@ -238,7 +228,6 @@ export function generatePredictionData(currentGlucose: number, riskScore: number
     lower.push(Math.round(val - 10));
   }
 
-  // Future 2 hours (prediction)
   const dropRate = riskScore / 100 * 0.5;
   let lastVal = currentGlucose;
   for (let i = 15; i <= 120; i += 15) {
@@ -330,8 +319,7 @@ export function getTimelineSummary(logs: LogEntry[]): { mostCommonRiskTime: stri
 
   const avgRisk = Math.round(logs.reduce((s, l) => s + l.riskScore, 0) / logs.length);
   const highRiskLogs = logs.filter(l => l.riskScore > 55);
-  
-  // Find most common time period
+
   const hours = logs.map(l => new Date(l.timestamp).getHours());
   const periods: Record<string, number> = { morning: 0, afternoon: 0, evening: 0, night: 0 };
   hours.forEach(h => {
@@ -352,7 +340,17 @@ export function getTimelineSummary(logs: LogEntry[]): { mostCommonRiskTime: stri
       else if (h >= 17 && h < 21) hrPeriods.evening++;
       else hrPeriods.night++;
     });
-    export function getBMIData(heightCm: number, weightKg: number): {
+    const topHrPeriod = Object.entries(hrPeriods).sort((a, b) => b[1] - a[1])[0];
+    if (topHrPeriod[1] >= 2) {
+      pattern = `${topHrPeriod[1]} of your ${highRiskLogs.length} high-risk events occurred in the ${topHrPeriod[0]} — consider a ${topHrPeriod[0]} snack routine.`;
+    }
+  }
+
+  return { mostCommonRiskTime: topPeriod, avgRiskScore: avgRisk, highRiskCount: highRiskLogs.length, pattern };
+}
+
+// ── BMI Calculator ────────────────────────────────────────────────────────
+export function getBMIData(heightCm: number, weightKg: number): {
   bmi: number;
   category: 'underweight' | 'normal' | 'overweight' | 'obese';
   label: string;
@@ -364,12 +362,4 @@ export function getTimelineSummary(logs: LogEntry[]): { mostCommonRiskTime: stri
   if (bmi < 25)   return { bmi: rounded, category: 'normal',      label: 'Normal',      color: '#22C97A' };
   if (bmi < 30)   return { bmi: rounded, category: 'overweight',  label: 'Overweight',  color: '#F59E42' };
   return             { bmi: rounded, category: 'obese',       label: 'Obese',       color: '#F25C6E' };
-}
-    const topHrPeriod = Object.entries(hrPeriods).sort((a, b) => b[1] - a[1])[0];
-    if (topHrPeriod[1] >= 2) {
-      pattern = `${topHrPeriod[1]} of your ${highRiskLogs.length} high-risk events occurred in the ${topHrPeriod[0]} — consider a ${topHrPeriod[0]} snack routine.`;
-    }
-  }
-
-  return { mostCommonRiskTime: topPeriod, avgRiskScore: avgRisk, highRiskCount: highRiskLogs.length, pattern };
 }
