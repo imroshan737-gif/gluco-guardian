@@ -111,9 +111,7 @@ useEffect(() => {
               </div>
               <p className="text-foreground/40 text-[10px] font-heading uppercase tracking-wider mb-2">{m.label}</p>
               <p className="text-2xl font-heading font-bold" style={{ color: m.color, textShadow: `0 0 12px ${m.color}66` }}>{m.value}</p>
-              <svg width="60" height="20" className="mx-auto mt-2 opacity-40">
-                <polyline points="0,15 10,10 20,12 30,5 40,8 50,3 60,7" fill="none" stroke={m.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+             
             </GlassTiltCard>
           ))}
         </div>
