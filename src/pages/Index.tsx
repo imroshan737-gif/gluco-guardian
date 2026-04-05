@@ -93,8 +93,7 @@ useEffect(() => {
       <div className="max-w-4xl mx-auto px-4 py-20 flex flex-col items-center text-center relative z-10">
 <div
   className="transition-all duration-700 overflow-hidden"
-  style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem' }}
->
+style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '-3rem' }}>
   <h1
     className="font-heading font-black text-foreground text-center"
     style={{
