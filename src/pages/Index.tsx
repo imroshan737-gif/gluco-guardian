@@ -92,6 +92,71 @@ useEffect(() => {
 
   return (
     <div className="page-transition">
+
+      {/* ── Top-right Login / Sign Up buttons ── */}
+      <div style={{
+        position: 'fixed',
+        top: '1rem',
+        right: '1.5rem',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.6rem',
+      }}>
+        <Link
+          to="/auth"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '0.45rem 1.1rem',
+            borderRadius: '100px',
+            border: '1.5px solid rgba(0,255,204,0.6)',
+            color: '#00ffcc',
+            background: 'rgba(0,255,204,0.08)',
+            fontSize: '0.72rem',
+            fontWeight: 600,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            backdropFilter: 'blur(8px)',
+            transition: 'transform 0.2s',
+          }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+          </svg>
+          Login
+        </Link>
+
+        <Link
+          to="/auth"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '0.45rem 1.2rem',
+            borderRadius: '100px',
+            border: 'none',
+            color: '#0a0020',
+            background: 'linear-gradient(135deg, #00ffcc, #a97ff0)',
+            boxShadow: '0 0 20px #00ffcc55',
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            transition: 'transform 0.2s',
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+          </svg>
+          Sign Up
+        </Link>
+      </div>
+
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <ParticlesBackground />
