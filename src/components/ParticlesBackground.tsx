@@ -14,7 +14,7 @@ export default function ParticlesBackground() {
 
   const options: ISourceOptions = useMemo(() => ({
     fullScreen: false,
-    background: { color: { value: "transparent" } },
+    background: { color: { value: "#7b4ce0" } },
     fpsLimit: 60,
     interactivity: {
       events: {
@@ -25,13 +25,13 @@ export default function ParticlesBackground() {
       },
     },
     particles: {
-      color: { value: "#00F5D4" },
-      links: { color: "#00F5D4", distance: 150, enable: true, opacity: 0.15, width: 1 },
-      move: { enable: true, speed: 0.8, direction: "none" as const, outModes: { default: "bounce" as const } },
-      number: { value: 60, density: { enable: true } },
-      opacity: { value: 0.4 },
+      color: { value: ["#a97ff0", "#00ffcc", "#ff6ef7"] },
+      links: { color: "#a97ff0", distance: 150, enable: true, opacity: 0.2, width: 0.8 },
+      move: { enable: true, speed: 0.6, direction: "none" as const, outModes: { default: "bounce" as const } },
+      number: { value: 70, density: { enable: true } },
+      opacity: { value: { min: 0.2, max: 0.5 } },
       shape: { type: "circle" },
-      size: { value: { min: 1, max: 3 } },
+      size: { value: { min: 1, max: 2.5 } },
     },
     detectRetina: true,
   }), []);
