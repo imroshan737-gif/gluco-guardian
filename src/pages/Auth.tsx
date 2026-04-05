@@ -5,20 +5,49 @@ import { useEffect } from "react";
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('signup');
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', age: '', diabetesType: 'Type 1', glucoseRange: '70–140' });
+  const [form, setForm] = useState({ fullName: '', email: '', password: '' });
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const [profileData, setProfileData] = useState({
+    age: '',
+    diabetesType: 'Type 1',
+    bloodPressure: '',
+    height: '',
+    weight: '',
+  });
   const navigate = useNavigate();
 
   useEffect(() => { if (getSession()) navigate('/dashboard'); }, []);
 
+  // Step 1: Validate basic fields, show popup
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.fullName || !form.email || !form.password || !form.age) { setError('Please fill all required fields.'); return; }
-    saveUser({ ...form, age: parseInt(form.age) });
-    // Auto login
+    if (!form.fullName || !form.email || !form.password) {
+      setError('Please fill all required fields.');
+      return;
+    }
+    setShowPopup(true);
+  };
+
+  // Step 2: Save everything after popup
+  const handleFinalSubmit = () => {
+    if (!profileData.age || !profileData.bloodPressure || !profileData.height || !profileData.weight) {
+      setError('Please fill all profile fields.');
+      return;
+    }
+    saveUser({
+      ...form,
+      age: parseInt(profileData.age),
+      diabetesType: profileData.diabetesType,
+      bloodPressure: profileData.bloodPressure,
+      height: profileData.height,
+      weight: profileData.weight,
+      glucoseRange: '70–140',
+    });
     loginUser(form.email, form.password);
+    setShowPopup(false);
     navigate('/dashboard');
   };
 
@@ -34,10 +63,10 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex page-transition">
+
       {/* Left — decorative */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, hsl(214,80%,5%), hsl(214,60%,10%))' }}>
         <div className="text-center px-12 relative z-10">
-          {/* CSS 3D molecule */}
           <div className="relative w-48 h-48 mx-auto mb-8" style={{ perspective: '600px' }}>
             <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
               {[0, 60, 120, 180, 240, 300].map((deg, i) => (
@@ -82,34 +111,140 @@ export default function AuthPage() {
 
           {mode === 'signup' ? (
             <form onSubmit={handleSignup} className="space-y-3">
-              <input placeholder="Full Name" value={form.fullName} onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} className={inputClass} />
-              <input type="email" placeholder="Email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} className={inputClass} />
-              <input type="password" placeholder="Password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} className={inputClass} />
-              <input type="number" placeholder="Age" value={form.age} onChange={e => setForm(p => ({ ...p, age: e.target.value }))} className={inputClass} />
-              <select value={form.diabetesType} onChange={e => setForm(p => ({ ...p, diabetesType: e.target.value }))} className={inputClass}>
-                <option value="Type 1">Type 1</option>
-                <option value="Type 2">Type 2</option>
-                <option value="Pre-diabetic">Pre-diabetic</option>
-                <option value="At Risk">At Risk</option>
-              </select>
-              <select value={form.glucoseRange} onChange={e => setForm(p => ({ ...p, glucoseRange: e.target.value }))} className={inputClass}>
-                <option value="Below 70">Below 70 mg/dL</option>
-                <option value="70–140">70–140 mg/dL</option>
-                <option value="140–180">140–180 mg/dL</option>
-                <option value="Above 180">Above 180 mg/dL</option>
-              </select>
-              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">Create My GlucoSense Profile</button>
+              <input
+                placeholder="Full Name"
+                value={form.fullName}
+                onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                className={inputClass}
+              />
+              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
+                Create My GlucoSense Profile
+              </button>
             </form>
           ) : (
             <form onSubmit={handleLogin} className="space-y-3">
-              <input type="email" placeholder="Email" value={loginForm.email} onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))} className={inputClass} />
-              <input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))} className={inputClass} />
+              <input
+                type="email"
+                placeholder="Email"
+                value={loginForm.email}
+                onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={loginForm.password}
+                onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))}
+                className={inputClass}
+              />
               <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">Login</button>
-              <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">Forgot Password?</p>
+              <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">
+                Forgot Password?
+              </p>
             </form>
           )}
         </div>
       </div>
+
+      {/* ── POPUP MODAL ── */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card p-8 w-full max-w-md">
+
+            <h2 className="font-heading text-2xl font-bold mb-1 text-center">
+              One More Step 👋
+            </h2>
+            <p className="text-foreground/40 text-sm text-center font-body mb-6">
+              Help us personalise your glucose monitoring
+            </p>
+
+            {error && <p className="text-destructive text-xs font-body mb-4 text-center">{error}</p>}
+
+            <div className="space-y-3">
+
+              {/* Age */}
+              <input
+                type="number"
+                placeholder="Age"
+                value={profileData.age}
+                onChange={e => setProfileData(p => ({ ...p, age: e.target.value }))}
+                className={inputClass}
+              />
+
+              {/* Diabetes Type */}
+              <select
+                value={profileData.diabetesType}
+                onChange={e => setProfileData(p => ({ ...p, diabetesType: e.target.value }))}
+                className={inputClass}
+              >
+                <option value="Type 1">Type 1 Diabetes</option>
+                <option value="Type 2">Type 2 Diabetes</option>
+                <option value="Pre-diabetic">Pre-diabetic</option>
+                <option value="At Risk">At Risk</option>
+              </select>
+
+              {/* Blood Pressure */}
+              <input
+                type="text"
+                placeholder="Blood Pressure (e.g. 120/80 mmHg)"
+                value={profileData.bloodPressure}
+                onChange={e => setProfileData(p => ({ ...p, bloodPressure: e.target.value }))}
+                className={inputClass}
+              />
+
+              {/* Height & Weight side by side */}
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  placeholder="Height (cm)"
+                  value={profileData.height}
+                  onChange={e => setProfileData(p => ({ ...p, height: e.target.value }))}
+                  className={inputClass}
+                />
+                <input
+                  type="number"
+                  placeholder="Weight (kg)"
+                  value={profileData.weight}
+                  onChange={e => setProfileData(p => ({ ...p, weight: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                onClick={handleFinalSubmit}
+                className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2"
+              >
+                Let's Go →
+              </button>
+
+              {/* Go back */}
+              <button
+                onClick={() => { setShowPopup(false); setError(''); }}
+                className="w-full text-foreground/30 hover:text-primary text-xs font-body mt-1 transition-colors"
+              >
+                ← Go back
+              </button>
+
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
