@@ -176,3 +176,8 @@
     transition-duration: 0.01ms !important;
   }
 }
+select option {
+  background-color: #0f0f1a;
+  color: #ffffff;
+}
+
