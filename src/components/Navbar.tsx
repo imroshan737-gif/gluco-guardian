@@ -16,9 +16,16 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
 useEffect(() => {
-  const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
+  const onScroll = () => {
+    const scrollY = window.scrollY || document.documentElement.scrollTop;
+    setScrolled(scrollY > window.innerHeight * 0.6);
+  };
   window.addEventListener('scroll', onScroll, { passive: true });
-  return () => window.removeEventListener('scroll', onScroll);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+    document.removeEventListener('scroll', onScroll);
+  };
 }, []);
 
   const links = [
@@ -37,7 +44,11 @@ useEffect(() => {
          <Link to={session ? '/dashboard' : '/'} className="flex items-center gap-2">
   <div
     className="transition-all duration-500 overflow-hidden flex items-center gap-2"
-    style={{ maxWidth: scrolled ? '300px' : '0px', opacity: scrolled ? 1 : 0 }}
+    style={{ 
+  maxWidth: scrolled ? '300px' : '0px', 
+  opacity: scrolled ? 1 : 0,
+  transition: 'max-width 0.5s ease, opacity 0.5s ease'
+}}
   >
     <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
       <span className="font-heading text-primary text-xs font-bold">GG</span>
