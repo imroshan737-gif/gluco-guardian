@@ -52,7 +52,7 @@ useEffect(() => {
         break;
       }
     }
-  }, 30000); // checks every 30 seconds
+  }, 10000); // checks every 10 seconds
 
   return () => clearInterval(interval);
 }, []);
