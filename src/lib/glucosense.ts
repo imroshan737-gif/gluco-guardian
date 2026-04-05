@@ -247,7 +247,10 @@ export function generatePredictionData(currentGlucose: number, riskScore: number
 // LocalStorage helpers
 const USERS_KEY = 'glucosense_users';
 const SESSION_KEY = 'glucosense_session';
-const LOGS_KEY = 'glucosense_logs';
+const getLogsKey = () => {
+  const session = getSession();
+  return session ? `glucosense_logs_${session.email}` : 'glucosense_logs_guest';
+};
 
 export function getUsers(): Record<string, UserProfile> {
   try { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); } catch { return {}; }
@@ -286,21 +289,19 @@ export function updateProfile(updates: Partial<UserProfile>) {
 }
 
 export function getLogs(): LogEntry[] {
-  try { return JSON.parse(localStorage.getItem(LOGS_KEY) || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(getLogsKey()) || '[]'); } catch { return []; }
 }
-
 export function saveLog(entry: LogEntry) {
   const logs = getLogs();
   logs.unshift(entry);
-  localStorage.setItem(LOGS_KEY, JSON.stringify(logs));
+  localStorage.setItem(getLogsKey(), JSON.stringify(logs));
 }
 
 export function clearAllData() {
   localStorage.removeItem(USERS_KEY);
   localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem(LOGS_KEY);
+  localStorage.removeItem(getLogsKey());
 }
-
 export function exportDataAsJson(): string {
   return JSON.stringify({
     users: getUsers(),
