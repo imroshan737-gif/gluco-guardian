@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getSession, logout, getRiskLevel, getLatestLog } from "@/lib/glucosense";
 import EmergencySOSModal from "./EmergencySOSModal";
@@ -13,6 +13,13 @@ export default function Navbar() {
   const latestLog = getLatestLog();
 
   const initials = session?.fullName?.split(' ').map(n => n[0]).join('').toUpperCase() || '?';
+  const [scrolled, setScrolled] = useState(false);
+
+useEffect(() => {
+  const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.6);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => window.removeEventListener('scroll', onScroll);
+}, []);
 
   const links = [
     { to: '/dashboard', label: 'Dashboard' },
@@ -27,12 +34,27 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-primary/20" style={{ borderRadius: 0 }}>
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to={session ? '/dashboard' : '/'} className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-              <span className="font-heading text-primary text-xs font-bold">GS</span>
-            </div>
-            <span className="font-heading text-sm text-primary hidden sm:block">GlucoSense AI</span>
-          </Link>
+         <Link to={session ? '/dashboard' : '/'} className="flex items-center gap-2">
+  <div
+    className="transition-all duration-500 overflow-hidden flex items-center gap-2"
+    style={{ maxWidth: scrolled ? '300px' : '0px', opacity: scrolled ? 1 : 0 }}
+  >
+    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+      <span className="font-heading text-primary text-xs font-bold">GG</span>
+    </div>
+    <span
+      className="font-heading text-sm hidden sm:block whitespace-nowrap"
+      style={{
+        background: 'linear-gradient(135deg, #ffffff 30%, #00F5D4 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      }}
+    >
+      GlucoGuardian
+    </span>
+  </div>
+</Link>
 
           {session && (
             <div className="hidden md:flex items-center gap-6">
