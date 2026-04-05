@@ -198,7 +198,7 @@ export default function LandingPage() {
                         grid: { color: 'rgba(255,255,255,0.05)' },
                       },
                     },
-                    annotation: undefined,
+                    
                   }}
                 />
               ) : (
