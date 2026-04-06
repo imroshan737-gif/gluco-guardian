@@ -182,19 +182,20 @@ select option {
 }
 
 /* ───── Light Mode ───── */
+/* ───── Light Mode ───── */
 html.light {
   --background: 210 40% 96%;
-  --foreground: 214 80% 10%;
+  --foreground: 214 60% 12%;
   --card: 0 0% 100%;
-  --card-foreground: 214 80% 10%;
+  --card-foreground: 214 60% 12%;
   --popover: 0 0% 100%;
-  --popover-foreground: 214 80% 10%;
+  --popover-foreground: 214 60% 12%;
   --primary: 168 80% 35%;
   --primary-foreground: 0 0% 100%;
   --secondary: 210 30% 88%;
-  --secondary-foreground: 214 80% 10%;
+  --secondary-foreground: 214 60% 12%;
   --muted: 210 30% 90%;
-  --muted-foreground: 214 20% 40%;
+  --muted-foreground: 214 25% 28%;
   --accent: 168 80% 35%;
   --accent-foreground: 0 0% 100%;
   --destructive: 356 82% 50%;
@@ -206,7 +207,7 @@ html.light {
   --border: 168 40% 70% / 0.4;
   --input: 210 30% 90%;
   --ring: 168 80% 35%;
-  --sidebar-background: 214 60% 8%;   /* sidebar stays dark intentionally */
+  --sidebar-background: 214 60% 8%;
   --sidebar-foreground: 180 100% 95%;
   --sidebar-primary: 168 100% 48%;
   --sidebar-primary-foreground: 214 80% 5%;
@@ -214,13 +215,27 @@ html.light {
   --sidebar-accent-foreground: 180 100% 95%;
   --sidebar-border: 168 100% 48% / 0.2;
   --sidebar-ring: 168 100% 48%;
-
   --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(0, 160, 130, 0.25);
   --glass-blur: 20px;
 }
 
-/* Fix glow effects for light mode */
+html.light body {
+  color: #1a1f3c;
+}
+
+html.light .text-foreground\/60,
+html.light .text-foreground\/70,
+html.light .text-foreground\/40 {
+  color: #3d4470 !important;
+}
+
+html.light .font-heading,
+html.light h1, html.light h2,
+html.light h3, html.light h4 {
+  color: #0f1535;
+}
+
 html.light .btn-primary-glow {
   box-shadow: 0 0 15px rgba(0, 160, 130, 0.25), 0 0 40px rgba(0, 160, 130, 0.1);
 }
