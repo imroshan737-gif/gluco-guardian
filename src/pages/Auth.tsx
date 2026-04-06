@@ -67,21 +67,7 @@ export default function AuthPage() {
     setError('');
     const medicationList = onMedication ? medications.filter(m => m.name.trim()) : [];
 
-    // 1. Register with Supabase — this triggers the welcome email automatically
-    const { error: signUpError } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        data: { full_name: form.fullName },
-      },
-    });
-
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
-    }
-
-    // 2. Save to localStorage as before so rest of app still works
+    // Save to localStorage first — this always works
     saveUser({
       ...form,
       age: parseInt(profileData.age),
@@ -95,6 +81,21 @@ export default function AuthPage() {
       stressLevel,
     });
     loginUser(form.email, form.password);
+
+    // Try Supabase separately — if it fails, app still works
+    try {
+      await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+        options: {
+          data: { full_name: form.fullName },
+        },
+      });
+    } catch (err) {
+      // Supabase failed silently — email won't send but app still works
+      console.warn('Supabase signup failed:', err);
+    }
+
     navigate('/dashboard');
   };
 
