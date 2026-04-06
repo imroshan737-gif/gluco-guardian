@@ -248,57 +248,56 @@ export default function AuthPage() {
             <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
           </div>
 
-          <div className="flex mb-6 glass-card p-1" style={{ borderRadius: 10 }}>
-        {mode === 'signup' ? (
-  <form onSubmit={handleSignup} className="space-y-3">
-    <input
-      placeholder="Full Name"
-      value={form.fullName}
-      onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
-      className={inputClass}
-    />
-    <input
-      type="email"
-      placeholder="Email"
-      value={form.email}
-      onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-      className={inputClass}
-    />
-    <input
-      type="password"
-      placeholder="Password"
-      value={form.password}
-      onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
-      className={inputClass}
-    />
-    <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
-      Create My GlucoSense Profile
-    </button>
-  </form>
-) : mode === 'login' ? (
-  <form onSubmit={handleLogin} className="space-y-3">
-    <input
-      type="email"
-      placeholder="Email"
-      value={loginForm.email}
-      onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))}
-      className={inputClass}
-    />
-    <input
-      type="password"
-      placeholder="Password"
-      value={loginForm.password}
-      onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))}
-      className={inputClass}
-    />
-    <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
-      Login
-    </button>
-    <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">
-      Forgot Password?
-    </p>
-  </form>
-) : null}
+          {mode === 'signup' ? (
+            <form onSubmit={handleSignup} className="space-y-3">
+              <input
+                placeholder="Full Name"
+                value={form.fullName}
+                onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                className={inputClass}
+              />
+              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
+                Create My GlucoSense Profile
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-3">
+              <input
+                type="email"
+                placeholder="Email"
+                value={loginForm.email}
+                onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))}
+                className={inputClass}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={loginForm.password}
+                onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))}
+                className={inputClass}
+              />
+              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
+                Login
+              </button>
+              <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">
+                Forgot Password?
+              </p>
+            </form>
+          )}
         </div>
       </div>
 
