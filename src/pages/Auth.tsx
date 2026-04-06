@@ -64,37 +64,40 @@ export default function AuthPage() {
   };
 
   const handleFinalSubmit = async () => {
-  setError('');
-  const medicationList = onMedication ? medications.filter(m => m.name.trim()) : [];
+    setError('');
+    const medicationList = onMedication ? medications.filter(m => m.name.trim()) : [];
 
-  // Save to localStorage first — app works regardless of Supabase
-  saveUser({
-    ...form,
-    age: parseInt(profileData.age),
-    diabetesType: profileData.diabetesType,
-    bloodPressure: profileData.bloodPressure,
-    height: profileData.height,
-    weight: profileData.weight,
-    glucoseRange: '70–140',
-    mealTimes,
-    medications: medicationList,
-    stressLevel,
-  });
-  loginUser(form.email, form.password);
-
-  // Try Supabase in background — don't block navigation if it fails
-  try {
-    await supabase.auth.signUp({
+    // 1. Register with Supabase — this triggers the welcome email automatically
+    const { error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: { data: { full_name: form.fullName } },
+      options: {
+        data: { full_name: form.fullName },
+      },
     });
-  } catch (_) {
-    // Supabase failure doesn't block the app
-  }
 
-  navigate('/dashboard');
-};
+    if (signUpError) {
+      setError(signUpError.message);
+      return;
+    }
+
+    // 2. Save to localStorage as before so rest of app still works
+    saveUser({
+      ...form,
+      age: parseInt(profileData.age),
+      diabetesType: profileData.diabetesType,
+      bloodPressure: profileData.bloodPressure,
+      height: profileData.height,
+      weight: profileData.weight,
+      glucoseRange: '70–140',
+      mealTimes,
+      medications: medicationList,
+      stressLevel,
+    });
+    loginUser(form.email, form.password);
+    navigate('/dashboard');
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -184,30 +187,56 @@ export default function AuthPage() {
 
           {error && step === 1 && <p className="text-destructive text-xs font-body mb-4 text-center">{error}</p>}
 
-          {mode === 'signup' ? (
-            <form onSubmit={handleSignup} className="space-y-3">
-              <input placeholder="Full Name" value={form.fullName}
-                onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} className={inputClass} />
-              <input type="email" placeholder="Email" value={form.email}
-                onChange={e => setForm(p => ({ ...p, email: e.target.value }))} className={inputClass} />
-              <input type="password" placeholder="Password" value={form.password}
-                onChange={e => setForm(p => ({ ...p, password: e.target.value }))} className={inputClass} />
-              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
-                Create My GlucoSense Profile
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleLogin} className="space-y-3">
-              <input type="email" placeholder="Email" value={loginForm.email}
-                onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))} className={inputClass} />
-              <input type="password" placeholder="Password" value={loginForm.password}
-                onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))} className={inputClass} />
-              <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">Login</button>
-              <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">
-                Forgot Password?
-              </p>
-            </form>
-          )}
+        {mode === 'signup' ? (
+  <form onSubmit={handleSignup} className="space-y-3">
+    <input
+      placeholder="Full Name"
+      value={form.fullName}
+      onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
+      className={inputClass}
+    />
+    <input
+      type="email"
+      placeholder="Email"
+      value={form.email}
+      onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+      className={inputClass}
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      value={form.password}
+      onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+      className={inputClass}
+    />
+    <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
+      Create My GlucoSense Profile
+    </button>
+  </form>
+) : mode === 'login' ? (
+  <form onSubmit={handleLogin} className="space-y-3">
+    <input
+      type="email"
+      placeholder="Email"
+      value={loginForm.email}
+      onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))}
+      className={inputClass}
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      value={loginForm.password}
+      onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))}
+      className={inputClass}
+    />
+    <button type="submit" className="btn-primary-glow w-full py-3 rounded-xl text-sm mt-2">
+      Login
+    </button>
+    <p className="text-center text-xs text-foreground/30 font-body mt-2 cursor-pointer hover:text-primary transition-colors">
+      Forgot Password?
+    </p>
+  </form>
+) : null}
         </div>
       </div>
 
