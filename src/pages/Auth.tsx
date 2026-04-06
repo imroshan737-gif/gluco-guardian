@@ -64,40 +64,37 @@ export default function AuthPage() {
   };
 
   const handleFinalSubmit = async () => {
-    setError('');
-    const medicationList = onMedication ? medications.filter(m => m.name.trim()) : [];
+  setError('');
+  const medicationList = onMedication ? medications.filter(m => m.name.trim()) : [];
 
-    // 1. Register with Supabase — this triggers the welcome email automatically
-    const { error: signUpError } = await supabase.auth.signUp({
+  // Save to localStorage first — app works regardless of Supabase
+  saveUser({
+    ...form,
+    age: parseInt(profileData.age),
+    diabetesType: profileData.diabetesType,
+    bloodPressure: profileData.bloodPressure,
+    height: profileData.height,
+    weight: profileData.weight,
+    glucoseRange: '70–140',
+    mealTimes,
+    medications: medicationList,
+    stressLevel,
+  });
+  loginUser(form.email, form.password);
+
+  // Try Supabase in background — don't block navigation if it fails
+  try {
+    await supabase.auth.signUp({
       email: form.email,
       password: form.password,
-      options: {
-        data: { full_name: form.fullName },
-      },
+      options: { data: { full_name: form.fullName } },
     });
+  } catch (_) {
+    // Supabase failure doesn't block the app
+  }
 
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
-    }
-
-    // 2. Save to localStorage as before so rest of app still works
-    saveUser({
-      ...form,
-      age: parseInt(profileData.age),
-      diabetesType: profileData.diabetesType,
-      bloodPressure: profileData.bloodPressure,
-      height: profileData.height,
-      weight: profileData.weight,
-      glucoseRange: '70–140',
-      mealTimes,
-      medications: medicationList,
-      stressLevel,
-    });
-    loginUser(form.email, form.password);
-    navigate('/dashboard');
-  };
-
+  navigate('/dashboard');
+};
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
