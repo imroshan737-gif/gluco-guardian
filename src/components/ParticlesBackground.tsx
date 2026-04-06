@@ -21,17 +21,17 @@ export default function ParticlesBackground() {
         onHover: { enable: true, mode: "grab" },
       },
       modes: {
-        grab: { distance: 180, links: { opacity: 0.5 } },
+        grab: { distance: 220, links: { opacity: 0.8 } },
       },
     },
     particles: {
       color: { value: ["#00f5d4", "#a97ff0", "#00ffcc", "#ff6ef7"] },
-      links: { color: "#00f5d4", distance: 160, enable: true, opacity: 0.15, width: 0.6 },
-      move: { enable: true, speed: 0.5, direction: "none" as const, outModes: { default: "bounce" as const } },
-      number: { value: 50, density: { enable: true } },
-      opacity: { value: { min: 0.15, max: 0.4 } },
+      links: { color: "#00f5d4", distance: 180, enable: true, opacity: 0.4, width: 1.2 },
+      move: { enable: true, speed: 0.7, direction: "none" as const, outModes: { default: "bounce" as const } },
+      number: { value: 70, density: { enable: true } },
+      opacity: { value: { min: 0.3, max: 0.7 } },
       shape: { type: "circle" },
-      size: { value: { min: 1, max: 2.5 } },
+      size: { value: { min: 1.5, max: 4 } },
     },
     detectRetina: true,
   }), []);

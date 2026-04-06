@@ -28,6 +28,32 @@ function CountUp({ end, suffix = "", duration = 2000 }: { end: number; suffix?: 
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
+function TypewriterText({ text, speed = 80 }: { text: string; speed?: number }) {
+  const [displayed, setDisplayed] = useState("");
+  const { ref, inView } = useInView({ triggerOnce: true });
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (inView && !started.current) {
+      started.current = true;
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) clearInterval(interval);
+      }, speed);
+      return () => clearInterval(interval);
+    }
+  }, [inView, text, speed]);
+
+  return (
+    <span ref={ref} className="text-primary text-glow">
+      {displayed}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+}
+
 export default function LandingPage() {
   const [demoInputs, setDemoInputs] = useState({ mealTime: '2', insulinDose: '6', sleepHours: '5', activityLevel: 'moderate' });
 
@@ -162,7 +188,7 @@ useEffect(() => {
         {/* Particles handled globally */}
 <div className="max-w-4xl mx-auto px-4 pt-10 pb-20 flex flex-col items-center text-center relative z-10"><div
   className="transition-all duration-700 overflow-hidden"
-style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '-3rem' }}>
+style={{ maxHeight: scrolled ? '0px' : '200px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '1rem' }}>
   <h1
     className="font-heading font-black text-foreground text-center"
     style={{
@@ -179,7 +205,7 @@ style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, margi
   </h1>
 </div>
 <p className="font-heading text-primary text-xs tracking-[0.3em] uppercase mb-4 animate-fade-slide-up">Predict · Protect · Prevail</p>  <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
-    Your body knows <span className="text-primary text-glow">before you do.</span>
+    Your body knows <TypewriterText text="before you do." speed={100} />
   </h1>
   <p className="text-foreground/60 font-body text-lg mb-10 max-w-2xl">
     GlucoSense uses AI to predict hypoglycaemic episodes up to 60 minutes before they happen — by analysing your medication schedule, meal timing, sleep patterns, and daily lifestyle context.

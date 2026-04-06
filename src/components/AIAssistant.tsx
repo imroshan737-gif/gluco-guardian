@@ -82,7 +82,7 @@ export default function AIAssistant() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed left-5 bottom-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 group"
+          className="fixed right-5 bottom-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 group"
           style={{
             background: "linear-gradient(135deg, rgba(0,245,212,0.2), rgba(169,127,240,0.2))",
             border: "1.5px solid rgba(0,245,212,0.5)",
@@ -98,7 +98,7 @@ export default function AIAssistant() {
       {/* Chat Panel */}
       {open && (
         <div
-          className="fixed left-5 bottom-5 z-50 flex flex-col"
+          className="fixed right-5 bottom-5 z-50 flex flex-col"
           style={{
             width: "380px",
             height: "520px",
