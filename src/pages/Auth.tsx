@@ -38,7 +38,49 @@ export default function AuthPage() {
   const [stressLevel, setStressLevel] = useState(5);
 
   const navigate = useNavigate();
-  useEffect(() => { if (getSession()) navigate('/dashboard'); }, []);
+
+  useEffect(() => {
+    // Check existing localStorage session
+    if (getSession()) { navigate('/dashboard'); return; }
+
+    // Check Supabase session (handles Google OAuth redirect)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        // Save to localStorage so rest of app works
+        const user = {
+          fullName: session.user.user_metadata?.full_name || session.user.email || '',
+          email: session.user.email || '',
+          password: '',
+          age: 0,
+          diabetesType: 'Type 1',
+          glucoseRange: '70–140',
+        };
+        saveUser(user);
+        loginUser(user.email, user.password);
+        localStorage.setItem('glucosense_session', JSON.stringify(user));
+        navigate('/dashboard');
+      }
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        const user = {
+          fullName: session.user.user_metadata?.full_name || session.user.email || '',
+          email: session.user.email || '',
+          password: '',
+          age: 0,
+          diabetesType: 'Type 1',
+          glucoseRange: '70–140',
+        };
+        saveUser(user);
+        localStorage.setItem('glucosense_session', JSON.stringify(user));
+        navigate('/dashboard');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
   useEffect(() => {
   const handleClickOutside = () => setDiabetesDropdownOpen(false);
   if (diabetesDropdownOpen) document.addEventListener('click', handleClickOutside);
