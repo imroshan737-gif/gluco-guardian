@@ -153,12 +153,12 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://gluco-guardian.vercel.app/dashboard',
+        redirectTo: 'https://gluco-guardian.vercel.app/auth',
       },
     });
     if (error) setError(error.message);
   };
-
+  
   const addMedication = () => {
     setMedications(prev => [
       ...prev,
