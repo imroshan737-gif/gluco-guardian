@@ -250,7 +250,6 @@ export function generatePredictionData(currentGlucose: number, riskScore: number
   return { labels, actual, predicted, upper, lower };
 }
 
-// LocalStorage helpers
 const USERS_KEY = 'glucosense_users';
 const SESSION_KEY = 'glucosense_session';
 const getLogsKey = () => {
@@ -297,6 +296,7 @@ export function updateProfile(updates: Partial<UserProfile>) {
 export function getLogs(): LogEntry[] {
   try { return JSON.parse(localStorage.getItem(getLogsKey()) || '[]'); } catch { return []; }
 }
+
 export function saveLog(entry: LogEntry) {
   const logs = getLogs();
   logs.unshift(entry);
@@ -308,6 +308,7 @@ export function clearAllData() {
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(getLogsKey());
 }
+
 export function exportDataAsJson(): string {
   return JSON.stringify({
     users: getUsers(),
@@ -356,7 +357,6 @@ export function getTimelineSummary(logs: LogEntry[]): { mostCommonRiskTime: stri
   return { mostCommonRiskTime: topPeriod, avgRiskScore: avgRisk, highRiskCount: highRiskLogs.length, pattern };
 }
 
-// ── BMI Calculator ────────────────────────────────────────────────────────
 export function getBMIData(heightCm: number, weightKg: number): {
   bmi: number;
   category: 'underweight' | 'normal' | 'overweight' | 'obese';
