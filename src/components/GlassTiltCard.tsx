@@ -3,6 +3,7 @@ import { useRef, type ReactNode, type MouseEvent } from "react";
 interface Props {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function GlassTiltCard({ children, className = "" }: Props) {
