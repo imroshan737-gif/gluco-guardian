@@ -252,7 +252,7 @@ export default function AuthPage() {
       className="absolute w-full z-50 rounded-lg overflow-hidden"
       style={{ background: '#0f0f1a', border: '1px solid rgba(0,245,212,0.2)', top: '110%' }}
     >
-      {['Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
+      {['No Diabetes', 'Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
         <div
           key={option}
           onClick={(e) => {
