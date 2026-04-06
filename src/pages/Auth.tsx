@@ -236,10 +236,10 @@ export default function AuthPage() {
             <div className="space-y-3">
               <input type="number" placeholder="Age" value={profileData.age}
                 onChange={e => setProfileData(p => ({ ...p, age: e.target.value }))} className={inputClass} />
-              <div className="relative">
+            <div className="relative">
   <button
     type="button"
-    onClick={() => setDiabetesDropdownOpen(p => !p)}
+    onClick={(e) => { e.stopPropagation(); setDiabetesDropdownOpen(p => !p); }}
     className={inputClass}
     style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
   >
@@ -255,7 +255,8 @@ export default function AuthPage() {
       {['Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
         <div
           key={option}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setProfileData(p => ({ ...p, diabetesType: option }));
             setDiabetesDropdownOpen(false);
           }}
