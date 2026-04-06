@@ -1,3 +1,4 @@
+import { generateNotificationsFromLogs } from "@/lib/notifications";
 import { useState } from "react";
 import {
   calculateRiskScore, getRiskLevel, generateInsights,
@@ -62,6 +63,7 @@ export default function QuickLogModal({ open, onClose }: Props) {
     };
 
     saveLog(entry);
+    generateNotificationsFromLogs();
     onClose();
   };
 
