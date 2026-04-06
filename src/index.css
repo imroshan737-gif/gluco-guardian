@@ -180,34 +180,31 @@ select option {
   background-color: #0f0f1a;
   color: #ffffff;
 }
-
-/* ───── Light Mode ───── */
-/* ───── Light Mode ───── */
 /* ───── Light Mode ───── */
 html.light {
-  --background: 220 25% 92%;
-  --foreground: 220 50% 10%;
-  --card: 0 0% 98%;
-  --card-foreground: 220 50% 10%;
-  --popover: 0 0% 98%;
-  --popover-foreground: 220 50% 10%;
-  --primary: 168 70% 32%;
+  --background: 220 30% 97%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 171 70% 38%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 220 20% 85%;
-  --secondary-foreground: 220 50% 10%;
-  --muted: 220 20% 86%;
-  --muted-foreground: 220 30% 30%;
-  --accent: 168 70% 32%;
+  --secondary: 220 20% 93%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 220 20% 92%;
+  --muted-foreground: 222 20% 35%;
+  --accent: 171 70% 38%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 356 82% 50%;
+  --destructive: 356 75% 50%;
   --destructive-foreground: 0 0% 100%;
-  --warning: 42 100% 38%;
+  --warning: 38 92% 48%;
   --warning-foreground: 0 0% 100%;
-  --safe: 160 65% 30%;
+  --safe: 160 65% 38%;
   --safe-foreground: 0 0% 100%;
-  --border: 220 20% 75% / 0.6;
-  --input: 220 20% 88%;
-  --ring: 168 70% 32%;
+  --border: 220 15% 85% / 0.8;
+  --input: 220 20% 93%;
+  --ring: 171 70% 38%;
   --sidebar-background: 214 60% 8%;
   --sidebar-foreground: 180 100% 95%;
   --sidebar-primary: 168 100% 48%;
@@ -216,80 +213,140 @@ html.light {
   --sidebar-accent-foreground: 180 100% 95%;
   --sidebar-border: 168 100% 48% / 0.2;
   --sidebar-ring: 168 100% 48%;
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 130, 110, 0.3);
+
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(15, 160, 140, 0.18);
   --glass-blur: 20px;
 }
 
-/* Base text */
+/* ── Page background — soft blue-white gradient ── */
 html.light body {
-  color: #0f1b2d;
-  background-color: #e4e9f2;
+  background: linear-gradient(145deg, #eef2ff 0%, #f0fdf9 50%, #f8fafc 100%) !important;
+  color: #0f172a;
 }
 
-/* All muted/label text — the uppercase card labels */
-html.light [class*="text-foreground/"],
-html.light [class*="text-muted"] {
-  color: #2e3a52 !important;
-}
-
+/* ── All text that was near-invisible ── */
 html.light .text-foreground\/60,
 html.light .text-foreground\/70,
-html.light .text-foreground\/50,
-html.light .text-foreground\/40 {
-  color: #3a4a6b !important;
+html.light .text-foreground\/50 {
+  color: #475569 !important;
 }
 
-/* Headings */
+html.light .text-foreground\/40,
+html.light .text-foreground\/30 {
+  color: #64748b !important;
+}
+
+/* ── Headings ── */
 html.light h1, html.light h2,
 html.light h3, html.light h4,
 html.light .font-heading {
-  color: #0a1628 !important;
+  color: #0f172a !important;
 }
 
-/* Cards */
+/* ── Cards — white with soft shadow, no washed-out purple ── */
 html.light .glass-card {
-  background: rgba(255, 255, 255, 0.88) !important;
-  border: 1px solid rgba(0, 130, 110, 0.2) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(15, 160, 140, 0.15) !important;
+  box-shadow: 0 2px 16px rgba(15, 160, 140, 0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
 }
 
-/* Navbar */
+html.light .glass-card-tilt {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(15, 160, 140, 0.15) !important;
+  box-shadow: 0 2px 16px rgba(15, 160, 140, 0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+
+html.light .glass-card-tilt:hover {
+  box-shadow: 0 8px 32px rgba(15, 160, 140, 0.18), 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+/* ── Metric cards — the 4 stat boxes ── */
+html.light .glass-card-tilt p.text-foreground\/40 {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Navbar ── */
 html.light nav.glass-card {
   background: rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 1px solid rgba(0, 130, 110, 0.2) !important;
+  border-bottom: 1px solid rgba(15, 160, 140, 0.15) !important;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.06) !important;
 }
 
-html.light nav a,
-html.light nav button {
-  color: #1a2a44 !important;
+html.light nav a {
+  color: #1e293b !important;
 }
 
-html.light nav a:hover {
-  color: #007a65 !important;
+html.light nav a:hover,
+html.light nav a.text-primary {
+  color: #0f9e8a !important;
 }
 
-/* Status bar at bottom */
+/* ── Status bar at bottom ── */
 html.light .status-bar {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-top: 1px solid rgba(0, 130, 110, 0.2) !important;
-  color: #1a2a44 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-top: 1px solid rgba(15, 160, 140, 0.15) !important;
+  box-shadow: 0 -1px 12px rgba(0,0,0,0.05) !important;
 }
 
+html.light .status-bar,
 html.light .status-bar * {
-  color: #1a2a44 !important;
+  color: #1e293b !important;
 }
 
-/* Glow effects toned down for light */
+/* ── Buttons ── */
 html.light .btn-primary-glow {
-  box-shadow: 0 0 12px rgba(0, 130, 110, 0.3) !important;
+  box-shadow: 0 0 16px rgba(15, 160, 140, 0.3), 0 2px 8px rgba(0,0,0,0.1) !important;
 }
 
+html.light .btn-primary-glow:hover {
+  box-shadow: 0 0 28px rgba(15, 160, 140, 0.45), 0 4px 12px rgba(0,0,0,0.12) !important;
+}
+
+html.light .btn-outline-glow {
+  border-color: rgba(15, 160, 140, 0.5) !important;
+  color: #0f9e8a !important;
+}
+
+/* ── Text glow — toned down for light ── */
 html.light .text-glow {
-  text-shadow: 0 0 10px rgba(0, 130, 110, 0.35) !important;
+  text-shadow: 0 0 12px rgba(15, 160, 140, 0.35) !important;
 }
 
-/* Particles / background dots — make them subtle */
+/* ── Particles — barely visible on light bg ── */
 html.light canvas {
-  opacity: 0.3;
+  opacity: 0.15 !important;
+}
+
+/* ── Inputs & selects ── */
+html.light input,
+html.light select,
+html.light textarea {
+  background: #f8fafc !important;
+  border-color: rgba(15, 160, 140, 0.25) !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* ── Risk badges ── */
+html.light .risk-badge-safe {
+  background: rgba(15, 160, 140, 0.1) !important;
+  color: #0a7a6a !important;
+  border-color: rgba(15, 160, 140, 0.3) !important;
+}
+
+html.light .risk-badge-caution {
+  background: rgba(234, 179, 8, 0.1) !important;
+  color: #a16207 !important;
+  border-color: rgba(234, 179, 8, 0.3) !important;
+}
+
+html.light .risk-badge-critical {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #b91c1c !important;
+  border-color: rgba(220, 38, 38, 0.3) !important;
 }
