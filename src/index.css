@@ -28,7 +28,7 @@
     --safe-foreground: 214 80% 5%;
     --border: 168 100% 48% / 0.2;
     --input: 214 30% 18%;
-    --ring: 168 100% 48%;
+    --ring: 250 100% 48%;
     --radius: 1rem;
     --sidebar-background: 214 60% 8%;
     --sidebar-foreground: 180 100% 95%;
@@ -37,7 +37,7 @@
     --sidebar-accent: 214 40% 15%;
     --sidebar-accent-foreground: 180 100% 95%;
     --sidebar-border: 168 100% 48% / 0.2;
-    --sidebar-ring: 168 100% 48%;
+    --sidebar-ring: 200 100% 48%;
 
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(0, 245, 212, 0.2);
