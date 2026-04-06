@@ -181,3 +181,65 @@ select option {
   color: #ffffff;
 }
 
+/* ───── Light Mode ───── */
+html.light {
+  --background: 210 40% 96%;
+  --foreground: 214 80% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 214 80% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 214 80% 10%;
+  --primary: 168 80% 35%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 30% 88%;
+  --secondary-foreground: 214 80% 10%;
+  --muted: 210 30% 90%;
+  --muted-foreground: 214 20% 40%;
+  --accent: 168 80% 35%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 356 82% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --warning: 42 100% 40%;
+  --warning-foreground: 0 0% 100%;
+  --safe: 160 70% 35%;
+  --safe-foreground: 0 0% 100%;
+  --border: 168 40% 70% / 0.4;
+  --input: 210 30% 90%;
+  --ring: 168 80% 35%;
+  --sidebar-background: 214 60% 8%;   /* sidebar stays dark intentionally */
+  --sidebar-foreground: 180 100% 95%;
+  --sidebar-primary: 168 100% 48%;
+  --sidebar-primary-foreground: 214 80% 5%;
+  --sidebar-accent: 214 40% 15%;
+  --sidebar-accent-foreground: 180 100% 95%;
+  --sidebar-border: 168 100% 48% / 0.2;
+  --sidebar-ring: 168 100% 48%;
+
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 160, 130, 0.25);
+  --glass-blur: 20px;
+}
+
+/* Fix glow effects for light mode */
+html.light .btn-primary-glow {
+  box-shadow: 0 0 15px rgba(0, 160, 130, 0.25), 0 0 40px rgba(0, 160, 130, 0.1);
+}
+
+html.light .btn-primary-glow:hover {
+  box-shadow: 0 0 25px rgba(0, 160, 130, 0.4), 0 0 60px rgba(0, 160, 130, 0.15);
+}
+
+html.light .text-glow {
+  text-shadow: 0 0 15px rgba(0, 160, 130, 0.4), 0 0 30px rgba(0, 160, 130, 0.2);
+}
+
+html.light .status-bar {
+  background: rgba(0, 160, 130, 0.05);
+  border-top: 1px solid var(--glass-border);
+}
+
+html.light .glass-card {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
