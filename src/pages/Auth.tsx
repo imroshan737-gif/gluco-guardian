@@ -178,8 +178,8 @@ export default function AuthPage() {
 
           <div className="flex mb-6 glass-card p-1" style={{ borderRadius: 10 }}>
             {(['signup', 'login'] as const).map(m => (
-              <button key={m} onClick={() => { setMode(m); setError(''); }}
-                className={`flex-1 py-2 text-sm font-heading rounded-lg transition-all ${mode === m ? 'bg-primary/20 text-primary' : 'text-foreground/40'}`}>
+           <button key={m} onClick={() => { setMode(m); setError(''); setStep(1); }}
+             className={`flex-1 py-2 text-sm font-heading rounded-lg transition-all ${mode === m ? 'bg-primary/20 text-primary' : 'text-foreground/40'}`}>
                 {m === 'signup' ? 'Sign Up' : 'Login'}
               </button>
             ))}
