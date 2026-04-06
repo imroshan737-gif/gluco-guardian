@@ -14,7 +14,7 @@ export default function ParticlesBackground() {
 
   const options: ISourceOptions = useMemo(() => ({
     fullScreen: false,
-    background: { color: { value: "#7b4ce0" } },
+    background: { color: { value: "transparent" } },
     fpsLimit: 60,
     interactivity: {
       events: {
