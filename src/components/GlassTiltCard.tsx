@@ -3,9 +3,10 @@ import { useRef, type ReactNode, type MouseEvent } from "react";
 interface Props {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export default function GlassTiltCard({ children, className = "" }: Props) {
+export default function GlassTiltCard({ children, className = "", style }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -30,6 +31,7 @@ export default function GlassTiltCard({ children, className = "" }: Props) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`glass-card-tilt p-6 ${className}`}
+      style={style}
     >
       {children}
     </div>

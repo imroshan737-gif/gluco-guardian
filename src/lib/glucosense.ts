@@ -13,6 +13,12 @@ export interface UserProfile {
   aiSensitivity?: 'conservative' | 'balanced' | 'aggressive';
   heightCm?: number;
   weightKg?: number;
+  bloodPressure?: string;
+  height?: string;
+  weight?: string;
+  mealTimes?: { breakfast: string; lunch: string; dinner: string };
+  medications?: { id: string; name: string; timing: string; schedule: string }[];
+  stressLevel?: number;
 }
 
 export interface LogEntry {

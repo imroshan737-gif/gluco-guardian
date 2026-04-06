@@ -142,7 +142,7 @@ export default function AuthPage() {
 
       {/* ── Left decorative panel ─────────────────────────────────────────── */}
       <div className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, hsl(214,80%,5%), hsl(214,60%,10%))' }}>
+        style={{ background: 'linear-gradient(135deg, hsl(220,30%,6%), hsl(220,25%,10%))' }}>
         <div className="text-center px-12 relative z-10">
           <div className="relative w-48 h-48 mx-auto mb-8" style={{ perspective: '600px' }}>
             <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>

@@ -159,7 +159,7 @@ useEffect(() => {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        <ParticlesBackground />
+        {/* Particles handled globally */}
 <div className="max-w-4xl mx-auto px-4 pt-10 pb-20 flex flex-col items-center text-center relative z-10"><div
   className="transition-all duration-700 overflow-hidden"
 style={{ maxHeight: scrolled ? '0px' : '160px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '-3rem' }}>

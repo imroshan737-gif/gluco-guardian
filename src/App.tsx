@@ -11,6 +11,8 @@ import Timeline from "./pages/Timeline";
 import Settings from "./pages/Settings";
 import HealthPlan from "./pages/HealthPlan";
 import NotFound from "./pages/NotFound";
+import AIAssistant from "./components/AIAssistant";
+import ParticlesBackground from "./components/ParticlesBackground";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +22,10 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        {/* Global particles background on all pages */}
+        <div className="fixed inset-0 -z-10">
+          <ParticlesBackground />
+        </div>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
@@ -30,6 +36,8 @@ const App = () => (
           <Route path="/health-plan" element={<HealthPlan />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        {/* Global AI Assistant */}
+        <AIAssistant />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
