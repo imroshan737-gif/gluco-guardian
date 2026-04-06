@@ -350,3 +350,7 @@ html.light .risk-badge-critical {
   color: #b91c1c !important;
   border-color: rgba(220, 38, 38, 0.3) !important;
 }
+/* ── Chart fixes for light mode ── */
+html.light .glass-card canvas {
+  opacity: 1 !important;
+}
