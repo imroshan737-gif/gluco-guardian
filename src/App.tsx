@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,8 +13,40 @@ import HealthPlan from "./pages/HealthPlan";
 import NotFound from "./pages/NotFound";
 import AIAssistant from "./components/AIAssistant";
 import ParticlesBackground from "./components/ParticlesBackground";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { saveUser } from "@/lib/glucosense";
 
 const queryClient = new QueryClient();
+
+function AuthRedirectHandler() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // This fires on every auth state change including Google OAuth callback
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
+        const user = {
+          fullName: session.user.user_metadata?.full_name || session.user.email || '',
+          email: session.user.email || '',
+          password: '',
+          age: session.user.user_metadata?.age || 0,
+          diabetesType: session.user.user_metadata?.diabetesType || 'Type 1',
+          glucoseRange: '70–140',
+        };
+        // Save to localStorage so rest of app works
+        saveUser(user);
+        localStorage.setItem('glucosense_session', JSON.stringify(user));
+        // Redirect to dashboard
+        navigate('/dashboard', { replace: true });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return null;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,6 +58,8 @@ const App = () => (
         <div className="fixed inset-0 -z-10">
           <ParticlesBackground />
         </div>
+        {/* Handles Google OAuth redirect globally */}
+        <AuthRedirectHandler />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
