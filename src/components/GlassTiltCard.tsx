@@ -31,6 +31,7 @@ export default function GlassTiltCard({ children, className = "", style }: Props
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`glass-card-tilt p-6 ${className}`}
+      style={style}
     >
       {children}
     </div>
