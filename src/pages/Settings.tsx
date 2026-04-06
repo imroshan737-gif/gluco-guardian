@@ -15,15 +15,16 @@ export default function Settings() {
     age: session?.age?.toString() || '',
     diabetesType: session?.diabetesType || 'Type 1',
     glucoseRange: session?.glucoseRange || '70–140',
-    emergencyContactName: session?.emergencyContactName || '',
     heightCm: session?.heightCm?.toString() || '',
     weightKg: session?.weightKg?.toString() || '',
+    emergencyContactName: (session as any)?.emergencyContactName || '',
+    emergencyContactNumber: (session as any)?.emergencyContactNumber || '',
+    emergencyContactRelation: (session as any)?.emergencyContactRelation || '',
   });
   const [alerts, setAlerts] = useState(session?.alertPreferences || { sound: true, notification: true, vibration: false });
   const [sensitivity, setSensitivity] = useState(session?.aiSensitivity || 'balanced');
   const [saved, setSaved] = useState(false);
 
-  // ── This is the fix — reads from form, not session ──
   const hasBodyData = !!form.heightCm && !!form.weightKg;
 
   const handleSave = () => {
@@ -32,12 +33,13 @@ export default function Settings() {
       age: parseInt(form.age),
       diabetesType: form.diabetesType,
       glucoseRange: form.glucoseRange,
+      heightCm: form.heightCm ? parseFloat(form.heightCm) : undefined,
+      weightKg: form.weightKg ? parseFloat(form.weightKg) : undefined,
       emergencyContactName: form.emergencyContactName,
       alertPreferences: alerts,
       aiSensitivity: sensitivity as any,
-      heightCm: form.heightCm ? parseFloat(form.heightCm) : undefined,
-      weightKg: form.weightKg ? parseFloat(form.weightKg) : undefined,
-    });
+      ...(({ emergencyContactNumber: form.emergencyContactNumber, emergencyContactRelation: form.emergencyContactRelation }) as any),
+    } as any);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -72,35 +74,22 @@ export default function Settings() {
 
         <div className="space-y-6">
 
-          {/* Profile */}
+          {/* ── Health Profile ── */}
           <GlassTiltCard>
             <h3 className="font-heading text-xs text-primary mb-4">HEALTH PROFILE</h3>
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Full Name</label>
-                <input
-                  value={form.fullName}
-                  onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
-                  className={inputClass}
-                />
+                <input value={form.fullName} onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))} className={inputClass} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Age</label>
-                  <input
-                    type="number"
-                    value={form.age}
-                    onChange={e => setForm(p => ({ ...p, age: e.target.value }))}
-                    className={inputClass}
-                  />
+                  <input type="number" value={form.age} onChange={e => setForm(p => ({ ...p, age: e.target.value }))} className={inputClass} />
                 </div>
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Diabetes Type</label>
-                  <select
-                    value={form.diabetesType}
-                    onChange={e => setForm(p => ({ ...p, diabetesType: e.target.value }))}
-                    className={inputClass}
-                  >
+                  <select value={form.diabetesType} onChange={e => setForm(p => ({ ...p, diabetesType: e.target.value }))} className={inputClass}>
                     <option value="Type 1">Type 1</option>
                     <option value="Type 2">Type 2</option>
                     <option value="Pre-diabetic">Pre-diabetic</option>
@@ -110,11 +99,7 @@ export default function Settings() {
               </div>
               <div>
                 <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Typical Glucose Range</label>
-                <select
-                  value={form.glucoseRange}
-                  onChange={e => setForm(p => ({ ...p, glucoseRange: e.target.value }))}
-                  className={inputClass}
-                >
+                <select value={form.glucoseRange} onChange={e => setForm(p => ({ ...p, glucoseRange: e.target.value }))} className={inputClass}>
                   <option value="Below 70">Below 70 mg/dL</option>
                   <option value="70–140">70–140 mg/dL</option>
                   <option value="140–180">140–180 mg/dL</option>
@@ -124,43 +109,84 @@ export default function Settings() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Height (cm)</label>
-                  <input
-                    type="number"
-                    placeholder="e.g. 170"
-                    value={form.heightCm}
-                    onChange={e => setForm(p => ({ ...p, heightCm: e.target.value }))}
-                    className={inputClass}
-                  />
+                  <input type="number" placeholder="e.g. 170" value={form.heightCm} onChange={e => setForm(p => ({ ...p, heightCm: e.target.value }))} className={inputClass} />
                 </div>
                 <div>
                   <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Weight (kg)</label>
-                  <input
-                    type="number"
-                    placeholder="e.g. 72"
-                    value={form.weightKg}
-                    onChange={e => setForm(p => ({ ...p, weightKg: e.target.value }))}
-                    className={inputClass}
-                  />
+                  <input type="number" placeholder="e.g. 72" value={form.weightKg} onChange={e => setForm(p => ({ ...p, weightKg: e.target.value }))} className={inputClass} />
                 </div>
               </div>
             </div>
           </GlassTiltCard>
 
-          {/* Emergency Contact */}
+          {/* ── Health Plan button — right below health profile ── */}
+          {hasBodyData && (
+            <button
+              onClick={() => { handleSave(); navigate('/health-plan'); }}
+              className="w-full py-3 text-sm font-heading text-center transition-colors rounded-xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(0,245,212,0.15), rgba(169,127,240,0.15))',
+                border: '1px solid rgba(0,245,212,0.3)',
+                color: '#00F5D4',
+              }}
+            >
+              💪 View My Health & Workout Plan
+            </button>
+          )}
+
+          {/* ── Emergency Contact ── */}
           <GlassTiltCard>
             <h3 className="font-heading text-xs text-primary mb-4">EMERGENCY CONTACT</h3>
-            <div>
-              <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Contact Name</label>
-              <input
-                placeholder="Name of emergency contact"
-                value={form.emergencyContactName}
-                onChange={e => setForm(p => ({ ...p, emergencyContactName: e.target.value }))}
-                className={inputClass}
-              />
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Contact Name</label>
+                <input
+                  placeholder="e.g. Rahul Sharma"
+                  value={form.emergencyContactName}
+                  onChange={e => setForm(p => ({ ...p, emergencyContactName: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={form.emergencyContactNumber}
+                    onChange={e => setForm(p => ({ ...p, emergencyContactNumber: e.target.value }))}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-foreground/40 font-heading uppercase block mb-1">Relation</label>
+                  <select
+                    value={form.emergencyContactRelation}
+                    onChange={e => setForm(p => ({ ...p, emergencyContactRelation: e.target.value }))}
+                    className={inputClass}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+              {form.emergencyContactName && form.emergencyContactNumber && (
+                <div
+                  className="p-3 rounded-xl text-xs font-body"
+                  style={{ background: 'rgba(0,245,212,0.06)', border: '1px solid rgba(0,245,212,0.2)', color: '#00F5D4' }}
+                >
+                  ✓ {form.emergencyContactName} ({form.emergencyContactRelation || 'Contact'}) · {form.emergencyContactNumber}
+                </div>
+              )}
             </div>
           </GlassTiltCard>
 
-          {/* Alert Preferences */}
+          {/* ── Alert Preferences ── */}
           <GlassTiltCard>
             <h3 className="font-heading text-xs text-primary mb-4">ALERT PREFERENCES</h3>
             <div className="space-y-3">
@@ -180,7 +206,7 @@ export default function Settings() {
             </div>
           </GlassTiltCard>
 
-          {/* AI Sensitivity */}
+          {/* ── AI Sensitivity ── */}
           <GlassTiltCard>
             <h3 className="font-heading text-xs text-primary mb-4">AI SENSITIVITY</h3>
             <div className="flex gap-2">
@@ -203,27 +229,12 @@ export default function Settings() {
             </p>
           </GlassTiltCard>
 
-          {/* Save */}
+          {/* ── Save ── */}
           <button onClick={handleSave} className="btn-primary-glow w-full py-3 rounded-xl text-sm">
             {saved ? '✓ Saved' : 'Save Changes'}
           </button>
 
-          {/* Health Plan Button — shows as soon as height + weight are typed */}
-          {hasBodyData && (
-            <button
-              onClick={() => { handleSave(); navigate('/health-plan'); }}
-              className="w-full py-3 text-sm font-heading text-center transition-colors rounded-xl"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0,245,212,0.15), rgba(169,127,240,0.15))',
-                border: '1px solid rgba(0,245,212,0.3)',
-                color: '#00F5D4',
-              }}
-            >
-              💪 View My Health & Workout Plan
-            </button>
-          )}
-
-          {/* Data Management */}
+          {/* ── Data Management ── */}
           <div className="flex gap-3">
             <button
               onClick={handleExport}
