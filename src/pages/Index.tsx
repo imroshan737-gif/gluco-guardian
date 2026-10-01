@@ -190,9 +190,8 @@ useEffect(() => {
   className="transition-all duration-700 overflow-hidden"
 style={{ maxHeight: scrolled ? '0px' : '200px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '1rem' }}>
   <h1
-    className="font-heading font-black text-foreground text-center"
+    className="font-heading font-black text-foreground text-center text-[2.3rem] sm:text-6xl lg:text-7xl xl:text-[7rem]"
     style={{
-       fontSize: 'clamp(2.3rem, 7rem, 7rem)',
       letterSpacing: '-0.03em',
       lineHeight: 1,
       background: 'linear-gradient(135deg, #ffffff 30%, #00F5D4 100%)',
