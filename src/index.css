@@ -68,12 +68,12 @@
   }
 
   .home-hero-shade {
-    background: linear-gradient(to bottom, hsl(var(--background) / 0.38), hsl(var(--background) / 0.58) 48%, hsl(var(--background) / 0.85));
+    background: linear-gradient(to bottom, hsl(var(--background) / 0.18), hsl(var(--background) / 0.18) 40%, hsl(var(--background) / 0.86)), linear-gradient(to right, hsl(var(--background) / 0.18), hsl(var(--background) / 0.68) 30%, hsl(var(--background) / 0.75) 55%, hsl(var(--background) / 0.48) 80%, hsl(var(--background) / 0.24));
   }
 
   @media (max-width: 640px) {
     .home-hero { background-position: 42% center; }
-    .home-hero-shade { background: hsl(var(--background) / 0.68); }
+    .home-hero-shade { background: linear-gradient(to bottom, hsl(var(--background) / 0.62), hsl(var(--background) / 0.82)); }
   }
 
   .glass-card {
