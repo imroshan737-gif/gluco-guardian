@@ -1,1 +1,1 @@
-Homepage uses the uploaded glucose-meter photo through a CDN asset pointer; keep animated particles on interior pages only so the homepage remains static and readable.
+Homepage uses its own scoped light theme (.home-light in index.css) and the uploaded product photo via a CDN asset pointer; particles stay on interior pages only so the homepage remains static and clean.
