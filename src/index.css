@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -373,3 +373,49 @@ html.light .risk-badge-critical {
 html.light .glass-card canvas {
   opacity: 1 !important;
 }
+
+/* Light, clinical homepage theme — scoped so other pages keep their own look. */
+.home-light {
+  --hl-bg: 150 11% 97%;
+  --hl-alt: 165 23% 94%;
+  --hl-card: 0 0% 100%;
+  --hl-ink: 198 54% 14%;
+  --hl-muted: 200 11% 43%;
+  --hl-faint: 197 9% 52%;
+  --hl-teal: 171 100% 33%;
+  --hl-teal-dark: 172 88% 26%;
+  --hl-teal-soft: 165 47% 93%;
+  --hl-border: 168 18% 87%;
+  --hl-footer-text: 168 16% 86%;
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  background: hsl(var(--hl-bg));
+  color: hsl(var(--hl-ink));
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+.home-light h1, .home-light h2, .home-light h3 { font-family: 'Manrope', system-ui, sans-serif; color: hsl(var(--hl-ink)); letter-spacing: -0.02em; }
+.hl-bg { background: hsl(var(--hl-bg)); }
+.hl-alt { background: hsl(var(--hl-alt)); }
+.hl-ink { color: hsl(var(--hl-ink)); }
+.hl-muted { color: hsl(var(--hl-muted)); }
+.hl-faint { color: hsl(var(--hl-faint)); }
+.hl-teal { color: hsl(var(--hl-teal)); }
+.hl-teal-dark { color: hsl(var(--hl-teal-dark)); }
+.hl-border { border-color: hsl(var(--hl-border)); }
+.hl-card { background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 14px; box-shadow: 0 1px 2px hsl(var(--hl-ink) / 0.04); }
+.hl-icon { background: hsl(var(--hl-teal-soft)); color: hsl(var(--hl-teal)); }
+.hl-btn-primary { background: hsl(var(--hl-teal)); color: hsl(0 0% 100%); font-weight: 600; border-radius: 10px; transition: background .2s; }
+.hl-btn-primary:hover { background: hsl(var(--hl-teal-dark)); }
+.hl-btn-outline { background: hsl(var(--hl-card)); color: hsl(var(--hl-ink)); border: 1px solid hsl(var(--hl-border)); font-weight: 600; border-radius: 10px; transition: border-color .2s, color .2s; }
+.hl-btn-outline:hover { border-color: hsl(var(--hl-teal-dark)); color: hsl(var(--hl-teal-dark)); }
+.hl-link { color: hsl(var(--hl-muted)); transition: color .2s; }
+.hl-link:hover { color: hsl(var(--hl-teal-dark)); }
+.hl-input { width: 100%; background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 10px; padding: .6rem .75rem; font-size: .875rem; color: hsl(var(--hl-ink)); }
+.hl-input:focus { outline: none; border-color: hsl(var(--hl-teal)); box-shadow: 0 0 0 3px hsl(var(--hl-teal) / 0.15); }
+.hl-nav { background: hsl(var(--hl-bg) / 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid hsl(var(--hl-border)); }
+.hl-footer { background: hsl(var(--hl-ink)); color: hsl(var(--hl-footer-text)); }
+.hl-footer-strong { color: hsl(0 0% 100%); }
+.hl-badge-warn { background: hsl(40 100% 94%); color: hsl(32 80% 32%); border: 1px solid hsl(40 80% 80%); }
+.hl-danger { color: hsl(355 70% 45%); }
+.hl-caret { color: hsl(var(--hl-teal)); }
