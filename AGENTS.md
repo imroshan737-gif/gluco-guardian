@@ -1,0 +1,1 @@
+Homepage uses the uploaded glucose-meter photo through a CDN asset pointer; keep animated particles on interior pages only so the homepage remains static and readable.

@@ -60,6 +60,22 @@
 }
 
 @layer components {
+  .home-hero {
+    min-height: min(88svh, 860px);
+    background-color: hsl(var(--background));
+    background-position: center;
+    background-size: cover;
+  }
+
+  .home-hero-shade {
+    background: linear-gradient(to bottom, hsl(var(--background) / 0.38), hsl(var(--background) / 0.58) 48%, hsl(var(--background) / 0.85));
+  }
+
+  @media (max-width: 640px) {
+    .home-hero { background-position: 42% center; }
+    .home-hero-shade { background: hsl(var(--background) / 0.68); }
+  }
+
   .glass-card {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);

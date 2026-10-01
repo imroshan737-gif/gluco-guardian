@@ -4,7 +4,7 @@ import { logout } from "@/lib/glucosense";
 import { useInView } from "react-intersection-observer";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler } from "chart.js";
-import ParticlesBackground from "@/components/ParticlesBackground";
+import heroPhoto from "@/assets/glucose-meter-home.png.asset.json";
 import GlassTiltCard from "@/components/GlassTiltCard";
 import { Activity, Brain, Zap, Shield, BarChart3, Watch } from "lucide-react";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
@@ -184,15 +184,15 @@ useEffect(() => {
       </div>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Particles handled globally */}
-<div className="max-w-4xl mx-auto px-4 pt-10 pb-20 flex flex-col items-center text-center relative z-10"><div
+      <section className="home-hero relative flex min-h-[680px] items-center overflow-hidden" style={{ backgroundImage: `url(${heroPhoto.url})` }}>
+        <div className="home-hero-shade absolute inset-0" aria-hidden="true" />
+<div className="max-w-4xl mx-auto px-4 pt-28 pb-24 flex flex-col items-center text-center relative z-10"><div
   className="transition-all duration-700 overflow-hidden"
 style={{ maxHeight: scrolled ? '0px' : '200px', opacity: scrolled ? 0 : 1, marginBottom: scrolled ? '0' : '1.5rem', marginTop: '1rem' }}>
   <h1
     className="font-heading font-black text-foreground text-center"
     style={{
-      fontSize: 'clamp(3rem, 10vw, 7rem)',
+       fontSize: 'clamp(2.3rem, 7rem, 7rem)',
       letterSpacing: '-0.03em',
       lineHeight: 1,
       background: 'linear-gradient(135deg, #ffffff 30%, #00F5D4 100%)',
@@ -207,8 +207,8 @@ style={{ maxHeight: scrolled ? '0px' : '200px', opacity: scrolled ? 0 : 1, margi
 <p className="font-heading text-primary text-xs tracking-[0.3em] uppercase mb-4 animate-fade-slide-up">Predict · Protect · Prevail</p>  <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6">
     Your body knows <TypewriterText text="before you do." speed={100} />
   </h1>
-  <p className="text-foreground/60 font-body text-lg mb-10 max-w-2xl">
-    GlucoSense uses AI to predict hypoglycaemic episodes up to 60 minutes before they happen — by analysing your medication schedule, meal timing, sleep patterns, and daily lifestyle context.
+   <p className="text-foreground/90 font-body text-lg mb-10 max-w-xl leading-relaxed">
+     Understand your glucose risk before it catches you off guard.
   </p>
   <div className="flex flex-wrap gap-4 justify-center">
     <Link to="/auth" className="btn-primary-glow px-8 py-3 rounded-xl text-sm inline-block">Get Started — Free</Link>
