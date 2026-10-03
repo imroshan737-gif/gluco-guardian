@@ -293,7 +293,7 @@ export default function Navbar() {
                                   className="flex gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 hover:scale-[1.01]"
                                   style={{
                                     background: n.read
-                                      ? "rgba(255,255,255,0.02)"
+                                      ? "rgba(15,23,42,0.03)"
                                       : `rgba(${
                                           color === "#E63946"
                                             ? "230,57,70"
@@ -301,10 +301,10 @@ export default function Navbar() {
                                             ? "255,140,0"
                                             : color === "#FFB703"
                                             ? "255,183,3"
-                                            : "0,245,212"
-                                        },0.06)`,
-                                    border: `1px solid ${n.read ? "rgba(255,255,255,0.04)" : color + "28"}`,
-                                    borderLeft: `3px solid ${n.read ? "rgba(255,255,255,0.08)" : color}`,
+                                            : "15,160,140"
+                                        },0.08)`,
+                                    border: `1px solid ${n.read ? "rgba(15,23,42,0.08)" : color + "28"}`,
+                                    borderLeft: `3px solid ${n.read ? "rgba(15,23,42,0.15)" : color}`,
                                   }}
                                 >
                                   <span className="text-base mt-0.5 flex-shrink-0">
@@ -314,7 +314,7 @@ export default function Navbar() {
                                     <div className="flex items-center justify-between gap-1 mb-0.5">
                                       <p
                                         className="text-[11px] font-heading truncate"
-                                        style={{ color: n.read ? "rgba(255,255,255,0.4)" : "#fff" }}
+                                        style={{ color: n.read ? "#94a3b8" : "#0f172a" }}
                                       >
                                         {n.title}
                                       </p>
@@ -329,15 +329,15 @@ export default function Navbar() {
                                       className="text-[10px] font-body leading-relaxed"
                                       style={{
                                         color: n.read
-                                          ? "rgba(255,255,255,0.25)"
-                                          : "rgba(255,255,255,0.55)",
+                                          ? "#94a3b8"
+                                          : "#475569",
                                       }}
                                     >
                                       {n.message}
                                     </p>
                                     <p
                                       className="text-[9px] mt-1 font-body"
-                                      style={{ color: "rgba(255,255,255,0.2)" }}
+                                      style={{ color: "#94a3b8" }}
                                     >
                                       {new Date(n.time).toLocaleTimeString([], {
                                         hour: "2-digit",

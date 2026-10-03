@@ -72,7 +72,7 @@ export default function RiskGauge({ score, size = 240 }: Props) {
         <path
           d={`M ${arcStart.x} ${arcStart.y} A ${r} ${r} 0 0 1 ${arcEnd.x} ${arcEnd.y}`}
           fill="none"
-          stroke="rgba(255,255,255,0.1)"
+          stroke="rgba(15,23,42,0.1)"
           strokeWidth="12"
           strokeLinecap="round"
         />
@@ -90,7 +90,7 @@ export default function RiskGauge({ score, size = 240 }: Props) {
         <circle cx={cx} cy={cy} r="6" fill={color} style={{ filter: `drop-shadow(0 0 6px ${color})` }} />
         {/* Score text */}
         <text x={cx} y={cy - 15} textAnchor="middle" className="font-heading" fill={color} fontSize="32" fontWeight="700" fontFamily="Orbitron">{animatedScore}</text>
-        <text x={cx} y={cy + 20} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="11" fontFamily="DM Sans">/ 100</text>
+        <text x={cx} y={cy + 20} textAnchor="middle" fill="#64748b" fontSize="11" fontFamily="DM Sans">/ 100</text>
       </svg>
       <span className="font-heading text-sm tracking-widest mt-1" style={{ color }}>{getLabel(animatedScore)}</span>
     </div>

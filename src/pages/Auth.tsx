@@ -252,9 +252,9 @@ export default function AuthPage() {
               gap: '12px',
               padding: '0.75rem 1.5rem',
               borderRadius: '12px',
-              border: '1.5px solid rgba(255,255,255,0.12)',
-              background: 'rgba(255,255,255,0.05)',
-              color: '#ffffff',
+              border: '1.5px solid rgba(15,23,42,0.15)',
+              background: '#ffffff',
+              color: '#0f172a',
               fontSize: '0.85rem',
               fontWeight: 700,
               letterSpacing: '0.08em',
@@ -265,12 +265,12 @@ export default function AuthPage() {
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.3)';
+              (e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(15,160,140,0.4)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.12)';
+              (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(15,23,42,0.15)';
             }}
           >
             <svg width="20" height="20" viewBox="0 0 48 48">
@@ -285,9 +285,9 @@ export default function AuthPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-            <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '11px', letterSpacing: '2px' }}>OR</span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+            <div style={{ flex: 1, height: '1px', background: 'rgba(15,23,42,0.1)' }} />
+            <span style={{ color: '#94a3b8', fontSize: '11px', letterSpacing: '2px' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(15,23,42,0.1)' }} />
           </div>
 
           {mode === 'signup' ? (
@@ -373,13 +373,13 @@ export default function AuthPage() {
     style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
   >
     <span>{profileData.diabetesType}</span>
-    <span style={{ color: 'rgba(255,255,255,0.4)' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
+    <span style={{ color: '#64748b' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
   </button>
 
   {diabetesDropdownOpen && (
     <div
       className="absolute w-full z-50 rounded-lg overflow-hidden"
-      style={{ background: '#0f0f1a', border: '1px solid rgba(0,245,212,0.2)', top: '110%' }}
+      style={{ background: '#ffffff', border: '1px solid rgba(15,160,140,0.25)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', top: '110%' }}
     >
       {['No Diabetes', 'Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
         <div
