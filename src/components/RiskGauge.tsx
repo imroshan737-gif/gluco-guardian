@@ -72,7 +72,7 @@ export default function RiskGauge({ score, size = 240 }: Props) {
         <path
           d={`M ${arcStart.x} ${arcStart.y} A ${r} ${r} 0 0 1 ${arcEnd.x} ${arcEnd.y}`}
           fill="none"
-          stroke="rgba(255,255,255,0.1)"
+          stroke="rgba(15,23,42,0.1)"
           strokeWidth="12"
           strokeLinecap="round"
         />

@@ -293,7 +293,7 @@ export default function Navbar() {
                                   className="flex gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 hover:scale-[1.01]"
                                   style={{
                                     background: n.read
-                                      ? "rgba(255,255,255,0.02)"
+                                      ? "rgba(15,23,42,0.03)"
                                       : `rgba(${
                                           color === "#E63946"
                                             ? "230,57,70"
@@ -301,10 +301,10 @@ export default function Navbar() {
                                             ? "255,140,0"
                                             : color === "#FFB703"
                                             ? "255,183,3"
-                                            : "0,245,212"
-                                        },0.06)`,
-                                    border: `1px solid ${n.read ? "rgba(255,255,255,0.04)" : color + "28"}`,
-                                    borderLeft: `3px solid ${n.read ? "rgba(255,255,255,0.08)" : color}`,
+                                            : "15,160,140"
+                                        },0.08)`,
+                                    border: `1px solid ${n.read ? "rgba(15,23,42,0.08)" : color + "28"}`,
+                                    borderLeft: `3px solid ${n.read ? "rgba(15,23,42,0.15)" : color}`,
                                   }}
                                 >
                                   <span className="text-base mt-0.5 flex-shrink-0">
