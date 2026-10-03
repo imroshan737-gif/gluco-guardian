@@ -314,7 +314,7 @@ export default function Navbar() {
                                     <div className="flex items-center justify-between gap-1 mb-0.5">
                                       <p
                                         className="text-[11px] font-heading truncate"
-                                        style={{ color: n.read ? "rgba(255,255,255,0.4)" : "#fff" }}
+                                        style={{ color: n.read ? "#94a3b8" : "#0f172a" }}
                                       >
                                         {n.title}
                                       </p>
@@ -329,15 +329,15 @@ export default function Navbar() {
                                       className="text-[10px] font-body leading-relaxed"
                                       style={{
                                         color: n.read
-                                          ? "rgba(255,255,255,0.25)"
-                                          : "rgba(255,255,255,0.55)",
+                                          ? "#94a3b8"
+                                          : "#475569",
                                       }}
                                     >
                                       {n.message}
                                     </p>
                                     <p
                                       className="text-[9px] mt-1 font-body"
-                                      style={{ color: "rgba(255,255,255,0.2)" }}
+                                      style={{ color: "#94a3b8" }}
                                     >
                                       {new Date(n.time).toLocaleTimeString([], {
                                         hour: "2-digit",
