@@ -266,7 +266,7 @@ export default function Settings() {
                   key={doc.name}
                   className="flex items-center gap-3 p-3 rounded-xl transition-all"
                   style={{
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'rgba(15,23,42,0.02)',
                     border: `1px solid ${doc.color}18`,
                   }}
                 >
@@ -289,7 +289,7 @@ export default function Settings() {
                       ) : (
                         <span
                           className="text-[8px] px-1.5 py-0.5 rounded-full flex-shrink-0"
-                          style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+                          style={{ background: 'rgba(15,23,42,0.05)', color: '#94a3b8', border: '1px solid rgba(15,23,42,0.12)' }}
                         >
                           BUSY
                         </span>
@@ -315,9 +315,9 @@ export default function Settings() {
                         color: doc.color,
                         cursor: 'pointer',
                       } : {
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        color: 'rgba(255,255,255,0.2)',
+                        background: 'rgba(15,23,42,0.03)',
+                        border: '1px solid rgba(15,23,42,0.1)',
+                        color: '#94a3b8',
                         cursor: 'not-allowed',
                       }}
                     >
