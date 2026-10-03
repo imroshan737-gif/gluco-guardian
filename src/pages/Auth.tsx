@@ -373,13 +373,13 @@ export default function AuthPage() {
     style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
   >
     <span>{profileData.diabetesType}</span>
-    <span style={{ color: 'rgba(255,255,255,0.4)' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
+    <span style={{ color: '#64748b' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
   </button>
 
   {diabetesDropdownOpen && (
     <div
       className="absolute w-full z-50 rounded-lg overflow-hidden"
-      style={{ background: '#0f0f1a', border: '1px solid rgba(0,245,212,0.2)', top: '110%' }}
+      style={{ background: '#ffffff', border: '1px solid rgba(15,160,140,0.25)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', top: '110%' }}
     >
       {['No Diabetes', 'Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
         <div
