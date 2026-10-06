@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,19 +6,19 @@
 
 @layer base {
   :root {
-    --background: 220 30% 97%;
-    --foreground: 222 47% 11%;
+    --background: 210 29% 97%;
+    --foreground: 207 29% 13%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 171 70% 38%;
+    --primary: 207 68% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 93%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 20% 92%;
-    --muted-foreground: 222 20% 35%;
-    --accent: 171 70% 38%;
+    --secondary: 210 23% 94%;
+    --secondary-foreground: 207 29% 13%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 208 13% 40%;
+    --accent: 163 52% 36%;
     --accent-foreground: 0 0% 100%;
     --destructive: 356 75% 50%;
     --destructive-foreground: 0 0% 100%;
@@ -26,10 +26,10 @@
     --warning-foreground: 0 0% 100%;
     --safe: 160 65% 38%;
     --safe-foreground: 0 0% 100%;
-    --border: 220 15% 85% / 0.8;
-    --input: 220 20% 93%;
-    --ring: 171 70% 38%;
-    --radius: 1rem;
+    --border: 210 17% 84%;
+    --input: 210 20% 96%;
+    --ring: 207 68% 36%;
+    --radius: 0.5rem;
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
     --sidebar-primary: 171 70% 38%;
@@ -39,9 +39,9 @@
     --sidebar-border: 220 15% 85% / 0.8;
     --sidebar-ring: 171 70% 38%;
 
-    --glass-bg: rgba(255, 255, 255, 0.82);
-    --glass-border: rgba(15, 160, 140, 0.18);
-    --glass-blur: 20px;
+    --glass-bg: hsl(0 0% 100%);
+    --glass-border: hsl(210 17% 84%);
+    --glass-blur: 0px;
   }
 }
 
@@ -55,7 +55,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Sora', sans-serif;
+    letter-spacing: 0;
   }
 }
 
@@ -80,48 +81,54 @@
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(var(--glass-blur));
-    border-radius: 16px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px hsl(var(--foreground) / 0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .glass-card-tilt {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(var(--glass-blur));
-    border-radius: 16px;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    transform-style: preserve-3d;
-    perspective: 1000px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px hsl(var(--foreground) / 0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .glass-card-tilt:hover {
-    box-shadow: 0 20px 60px rgba(0, 245, 212, 0.15), 0 0 30px rgba(0, 245, 212, 0.1);
+    border-color: hsl(var(--primary) / 0.28);
+    box-shadow: 0 12px 30px hsl(var(--foreground) / 0.08);
   }
 
   .btn-primary-glow {
-    @apply bg-primary text-primary-foreground font-heading font-semibold tracking-wider uppercase;
-    box-shadow: 0 0 20px rgba(0, 245, 212, 0.3), 0 0 60px rgba(0, 245, 212, 0.1);
-    transition: all 0.3s ease;
+    @apply bg-primary text-primary-foreground font-heading font-semibold;
+    letter-spacing: 0;
+    text-transform: none;
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.1), 0 8px 18px hsl(var(--primary) / 0.16);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
 
   .btn-primary-glow:hover {
-    box-shadow: 0 0 30px rgba(0, 245, 212, 0.5), 0 0 80px rgba(0, 245, 212, 0.2);
-    transform: translateY(-2px);
+    background: hsl(207 68% 30%);
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.1), 0 10px 22px hsl(var(--primary) / 0.2);
+    transform: translateY(-1px);
   }
 
   .btn-outline-glow {
-    @apply border border-primary text-primary font-heading font-semibold tracking-wider uppercase bg-transparent;
-    transition: all 0.3s ease;
+    @apply border border-primary text-primary font-heading font-semibold bg-transparent;
+    letter-spacing: 0;
+    text-transform: none;
+    transition: all 0.2s ease;
   }
 
   .btn-outline-glow:hover {
     @apply bg-primary/10;
-    box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
-    transform: translateY(-2px);
+    box-shadow: none;
+    transform: translateY(-1px);
   }
 
   .text-glow {
-    text-shadow: 0 0 20px rgba(0, 245, 212, 0.5), 0 0 40px rgba(0, 245, 212, 0.3);
+    text-shadow: none;
   }
 
   .gauge-safe { color: hsl(var(--safe)); }
@@ -147,11 +154,11 @@
 
 @layer utilities {
   .font-heading {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Sora', sans-serif;
   }
 
   .font-body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
   }
 }
 
@@ -419,3 +426,104 @@ html .glass-card canvas {
 .hl-badge-warn { background: hsl(40 100% 94%); color: hsl(32 80% 32%); border: 1px solid hsl(40 80% 80%); }
 .hl-danger { color: hsl(355 70% 45%); }
 .hl-caret { color: hsl(var(--hl-teal)); }
+
+/* Professional product system */
+html body {
+  background: hsl(var(--background)) !important;
+  color: hsl(var(--foreground));
+}
+
+html h1, html h2, html h3, html h4, html .font-heading {
+  color: hsl(var(--foreground)) !important;
+  font-family: 'Sora', sans-serif;
+  letter-spacing: 0 !important;
+}
+
+html .font-body, html body {
+  font-family: 'Manrope', sans-serif;
+}
+
+html .glass-card,
+html .glass-card-tilt {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.04), 0 8px 24px hsl(var(--foreground) / 0.05) !important;
+  backdrop-filter: none;
+}
+
+html nav.glass-card {
+  background: hsl(var(--card) / 0.98) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 1px 8px hsl(var(--foreground) / 0.05) !important;
+}
+
+html input,
+html select,
+html textarea {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-radius: 8px !important;
+}
+
+html input:focus,
+html select:focus,
+html textarea:focus {
+  border-color: hsl(var(--primary)) !important;
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.12) !important;
+}
+
+html .btn-primary-glow,
+html .btn-primary-glow:hover {
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.1), 0 8px 18px hsl(var(--primary) / 0.16) !important;
+}
+
+.auth-page {
+  min-height: 100svh;
+  background: hsl(var(--background));
+}
+
+.auth-page::before {
+  content: "";
+  position: fixed;
+  inset: 0 50% 0 0;
+  background: hsl(var(--foreground));
+  pointer-events: none;
+}
+
+.auth-brand-panel {
+  background: hsl(var(--foreground));
+  color: hsl(var(--primary-foreground));
+}
+
+.auth-card {
+  width: min(100%, 440px);
+  padding: 2.5rem;
+}
+
+.auth-segment {
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.auth-segment-active {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.1);
+}
+
+.app-eyebrow {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--primary));
+}
+
+@media (max-width: 1023px) {
+  .auth-page::before { display: none; }
+  .auth-card { padding: 1.5rem; }
+}

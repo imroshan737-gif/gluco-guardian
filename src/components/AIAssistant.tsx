@@ -82,16 +82,15 @@ export default function AIAssistant() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed right-5 bottom-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 group"
+          className="fixed right-5 bottom-5 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all hover:-translate-y-0.5 group"
           style={{
-            background: "linear-gradient(135deg, rgba(0,245,212,0.2), rgba(169,127,240,0.2))",
-            border: "1.5px solid rgba(0,245,212,0.5)",
-            boxShadow: "0 0 30px rgba(0,245,212,0.3), 0 0 60px rgba(0,245,212,0.1)",
+            background: "hsl(var(--primary))",
+            border: "1px solid hsl(var(--primary))",
+            boxShadow: "0 8px 20px hsl(var(--primary) / 0.2)",
           }}
           title="AI Medical Assistant"
         >
-          <DNAIcon size={26} className="text-primary group-hover:animate-spin" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-primary animate-pulse" />
+          <DNAIcon size={22} className="text-primary-foreground" />
         </button>
       )}
 
@@ -102,17 +101,16 @@ export default function AIAssistant() {
           style={{
             width: "380px",
             height: "520px",
-            background: "rgba(10, 14, 26, 0.95)",
-            border: "1px solid rgba(0,245,212,0.25)",
-            borderRadius: "20px",
-            backdropFilter: "blur(20px)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,245,212,0.1)",
+            background: "hsl(var(--card))",
+            border: "1px solid hsl(var(--border))",
+            borderRadius: "8px",
+            boxShadow: "0 20px 50px hsl(var(--foreground) / 0.16)",
           }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid rgba(0,245,212,0.15)" }}>
+          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid hsl(var(--border))" }}>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(0,245,212,0.15)", border: "1px solid rgba(0,245,212,0.3)" }}>
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-primary/10 border border-primary/20">
                 <DNAIcon size={20} className="text-primary" />
               </div>
               <div>
@@ -151,8 +149,8 @@ export default function AIAssistant() {
                   className="max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs font-body leading-relaxed"
                   style={
                     msg.role === "user"
-                      ? { background: "rgba(0,245,212,0.15)", border: "1px solid rgba(0,245,212,0.2)", color: "hsl(180,100%,95%)" }
-                      : { background: "rgba(169,127,240,0.1)", border: "1px solid rgba(169,127,240,0.15)", color: "hsl(180,100%,90%)" }
+                      ? { background: "hsl(var(--primary) / 0.1)", border: "1px solid hsl(var(--primary) / 0.18)", color: "hsl(var(--foreground))" }
+                      : { background: "hsl(var(--secondary))", border: "1px solid hsl(var(--border))", color: "hsl(var(--foreground))" }
                   }
                 >
                   <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -170,7 +168,7 @@ export default function AIAssistant() {
           </div>
 
           {/* Input */}
-          <div className="px-4 py-3" style={{ borderTop: "1px solid rgba(0,245,212,0.15)" }}>
+          <div className="px-4 py-3" style={{ borderTop: "1px solid hsl(var(--border))" }}>
             <div className="flex gap-2">
               <input
                 ref={inputRef}

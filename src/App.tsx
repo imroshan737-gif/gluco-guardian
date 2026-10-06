@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,18 +12,11 @@ import Settings from "./pages/Settings";
 import HealthPlan from "./pages/HealthPlan";
 import NotFound from "./pages/NotFound";
 import AIAssistant from "./components/AIAssistant";
-import ParticlesBackground from "./components/ParticlesBackground";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { saveUser } from "@/lib/glucosense";
 
 const queryClient = new QueryClient();
-
-function InteriorParticles() {
-  const { pathname } = useLocation();
-  if (pathname === "/") return null;
-  return <div className="fixed inset-0 -z-10"><ParticlesBackground /></div>;
-}
 
 function AuthRedirectHandler() {
   const navigate = useNavigate();
@@ -60,8 +53,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        {/* Keep the interactive particles on interior pages, not over the homepage photo. */}
-        <InteriorParticles />
         {/* Handles Google OAuth redirect globally */}
         <AuthRedirectHandler />
         <Routes>
