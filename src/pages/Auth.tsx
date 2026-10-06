@@ -187,41 +187,36 @@ export default function AuthPage() {
   // Stress bar color
   const stressColor = stressLevel <= 3 ? '#00f5d4' : stressLevel <= 6 ? '#f5a623' : '#f54242';
 
-  const inputClass = "w-full bg-muted/30 border border-primary/20 rounded-lg px-3 py-2.5 text-sm font-body text-foreground focus:outline-none focus:border-primary/50 placeholder:text-foreground/30";
+  const inputClass = "w-full bg-card border border-border rounded-lg px-3.5 py-3 text-sm font-body text-foreground focus:outline-none focus:border-primary placeholder:text-muted-foreground";
   const labelClass = "text-xs text-foreground/50 font-body mb-1 block";
 
   return (
-    <div className="min-h-screen flex page-transition">
+    <div className="auth-page min-h-screen flex page-transition relative">
 
       {/* ── Left decorative panel ─────────────────────────────────────────── */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, hsl(220,30%,6%), hsl(220,25%,10%))' }}>
-        <div className="text-center px-12 relative z-10">
-          <div className="relative w-48 h-48 mx-auto mb-8" style={{ perspective: '600px' }}>
-            <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
-              {[0, 60, 120, 180, 240, 300].map((deg, i) => (
-                <div key={i} className="absolute w-4 h-4 rounded-full bg-primary" style={{
-                  top: `${50 + 40 * Math.sin(deg * Math.PI / 180)}%`,
-                  left: `${50 + 40 * Math.cos(deg * Math.PI / 180)}%`,
-                  boxShadow: '0 0 15px rgba(0,245,212,0.6)',
-                  transform: 'translate(-50%, -50%)',
-                }} />
-              ))}
-              <div className="absolute w-6 h-6 rounded-full bg-primary top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                style={{ boxShadow: '0 0 25px rgba(0,245,212,0.8)' }} />
-            </div>
+      <div className="auth-brand-panel hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
+        <div className="max-w-md px-12 relative z-10 text-left">
+          <div className="flex items-center gap-3 mb-16">
+            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-heading font-bold">G</div>
+            <span className="font-heading text-xl font-semibold text-primary-foreground">GlucoSense</span>
           </div>
-          <blockquote className="text-foreground/50 font-body text-lg italic mb-4">
-            "The greatest wealth is health."
-          </blockquote>
-          <p className="text-foreground/30 text-sm font-body">— Virgil</p>
-          <p className="mt-8 text-primary/60 text-xs font-heading tracking-widest">GLUCOSENSE AI</p>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground/55 mb-4">Clinical intelligence platform</p>
+          <h1 className="text-4xl leading-tight font-semibold mb-5 !text-primary-foreground">Clarity for every glucose decision.</h1>
+          <p className="text-primary-foreground/65 font-body leading-7">Understand risk earlier, explain the contributing factors, and act with confidence.</p>
+          <div className="mt-12 pt-6 border-t border-primary-foreground/15 flex items-center gap-3 text-sm text-primary-foreground/60">
+            <span className="w-2 h-2 rounded-full bg-accent" /> Secure personal health workspace
+          </div>
         </div>
       </div>
 
       {/* ── Right: Step 1 — Basic signup / login ─────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
-        <div className="glass-card p-8 w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative z-10">
+        <div className="glass-card auth-card">
+          <div className="lg:hidden flex items-center gap-2.5 mb-8">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-heading font-bold">G</div>
+            <span className="font-heading font-semibold">GlucoSense</span>
+          </div>
+          <p className="app-eyebrow text-center mb-3">Personal health workspace</p>
           <h2 className="font-heading text-2xl font-bold mb-1 text-center">
             {mode === 'signup' ? 'Create Your Profile' : 'Welcome Back'}
           </h2>
@@ -229,10 +224,10 @@ export default function AuthPage() {
             {mode === 'signup' ? 'Start your journey to safer glucose management.' : 'Log in to your GlucoSense dashboard.'}
           </p>
 
-          <div className="flex mb-6 glass-card p-1" style={{ borderRadius: 10 }}>
+          <div className="auth-segment flex mb-6 p-1">
             {(['signup', 'login'] as const).map(m => (
            <button key={m} onClick={() => { setMode(m); setError(''); setStep(1); }}
-             className={`flex-1 py-2 text-sm font-heading rounded-lg transition-all ${mode === m ? 'bg-primary/20 text-primary' : 'text-foreground/40'}`}>
+             className={`flex-1 py-2.5 text-sm font-body font-semibold rounded-md transition-all ${mode === m ? 'auth-segment-active' : 'text-muted-foreground'}`}>
                 {m === 'signup' ? 'Sign Up' : 'Login'}
               </button>
             ))}
@@ -251,26 +246,24 @@ export default function AuthPage() {
               justifyContent: 'center',
               gap: '12px',
               padding: '0.75rem 1.5rem',
-              borderRadius: '12px',
-              border: '1.5px solid rgba(15,23,42,0.15)',
-              background: '#ffffff',
-              color: '#0f172a',
+              borderRadius: '8px',
+              border: '1px solid hsl(var(--border))',
+              background: 'hsl(var(--card))',
+              color: 'hsl(var(--foreground))',
               fontSize: '0.85rem',
               fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
+              letterSpacing: '0',
               cursor: 'pointer',
               marginBottom: '1rem',
-              backdropFilter: 'blur(6px)',
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#f1f5f9';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(15,160,140,0.4)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--secondary))';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'hsl(var(--primary) / 0.35)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(15,23,42,0.15)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'hsl(var(--card))';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'hsl(var(--border))';
             }}
           >
             <svg width="20" height="20" viewBox="0 0 48 48">
@@ -280,7 +273,7 @@ export default function AuthPage() {
               <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
               <path fill="none" d="M0 0h48v48H0z"/>
             </svg>
-            Sign in with Google
+            Continue with Google
           </button>
 
           {/* Divider */}
