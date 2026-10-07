@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 29% 97%;
+    --background: 210 30% 92%;
     --foreground: 207 29% 13%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -14,9 +12,9 @@
     --popover-foreground: 222 47% 11%;
     --primary: 207 68% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 23% 94%;
+    --secondary: 209 42% 89%;
     --secondary-foreground: 207 29% 13%;
-    --muted: 210 20% 94%;
+    --muted: 210 24% 90%;
     --muted-foreground: 208 13% 40%;
     --accent: 163 52% 36%;
     --accent-foreground: 0 0% 100%;
@@ -26,7 +24,7 @@
     --warning-foreground: 0 0% 100%;
     --safe: 160 65% 38%;
     --safe-foreground: 0 0% 100%;
-    --border: 210 17% 84%;
+    --border: 209 24% 76%;
     --input: 210 20% 96%;
     --ring: 207 68% 36%;
     --radius: 0.5rem;
@@ -42,6 +40,12 @@
     --glass-bg: hsl(0 0% 100%);
     --glass-border: hsl(210 17% 84%);
     --glass-blur: 0px;
+    --surface-blue: 208 53% 94%;
+    --surface-green: 158 33% 92%;
+    --surface-strong: 207 38% 18%;
+    --surface-strong-foreground: 210 30% 98%;
+    --primary-hover: 207 68% 29%;
+    --shadow-panel: 0 8px 24px hsl(207 29% 13% / 0.08);
   }
 }
 
@@ -109,7 +113,7 @@
   }
 
   .btn-primary-glow:hover {
-    background: hsl(207 68% 30%);
+    background: hsl(var(--primary-hover));
     box-shadow: 0 1px 2px hsl(var(--foreground) / 0.1), 0 10px 22px hsl(var(--primary) / 0.2);
     transform: translateY(-1px);
   }
@@ -200,197 +204,23 @@
   }
 }
 
-select option {
-  background-color: #0f172a;
-  color: #0f172a;
-}
-
-/* ───── Light Mode ───── */
-html {
-  --background: 220 30% 97%;
-  --foreground: 222 47% 11%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --primary: 171 70% 38%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 220 20% 93%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 220 20% 92%;
-  --muted-foreground: 222 20% 35%;
-  --accent: 171 70% 38%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 356 75% 50%;
-  --destructive-foreground: 0 0% 100%;
-  --warning: 38 92% 48%;
-  --warning-foreground: 0 0% 100%;
-  --safe: 160 65% 38%;
-  --safe-foreground: 0 0% 100%;
-  --border: 220 15% 85% / 0.8;
-  --input: 220 20% 93%;
-  --ring: 171 70% 38%;
-  --sidebar-background: 214 60% 8%;
-  --sidebar-foreground: 180 100% 95%;
-  --sidebar-primary: 168 100% 48%;
-  --sidebar-primary-foreground: 214 80% 5%;
-  --sidebar-accent: 214 40% 15%;
-  --sidebar-accent-foreground: 180 100% 95%;
-  --sidebar-border: 168 100% 48% / 0.2;
-  --sidebar-ring: 168 100% 48%;
-
-  --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(15, 160, 140, 0.18);
-  --glass-blur: 20px;
-}
-
-/* ── Page background — soft blue-white gradient ── */
-html body {
-  background: linear-gradient(145deg, #eef2ff 0%, #f0fdf9 50%, #f8fafc 100%) !important;
-  color: #0f172a;
-}
-
-/* ── All text that was near-invisible ── */
-html .text-foreground\/60,
-html .text-foreground\/70,
-html .text-foreground\/50 {
-  color: #475569 !important;
-}
-
-html .text-foreground\/40,
-html .text-foreground\/30 {
-  color: #64748b !important;
-}
-
-/* ── Headings ── */
-html h1, html h2,
-html h3, html h4,
-html .font-heading {
-  color: #0f172a !important;
-}
-
-/* ── Cards — white with soft shadow, no washed-out purple ── */
-html .glass-card {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid rgba(15, 160, 140, 0.15) !important;
-  box-shadow: 0 2px 16px rgba(15, 160, 140, 0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
-}
-
-html .glass-card-tilt {
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid rgba(15, 160, 140, 0.15) !important;
-  box-shadow: 0 2px 16px rgba(15, 160, 140, 0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
-}
-
-html .glass-card-tilt:hover {
-  box-shadow: 0 8px 32px rgba(15, 160, 140, 0.18), 0 2px 8px rgba(0,0,0,0.08) !important;
-}
-
-/* ── Metric cards — the 4 stat boxes ── */
-html .glass-card-tilt p.text-foreground\/40 {
-  color: #475569 !important;
-  font-weight: 600 !important;
-}
-
-/* ── Navbar ── */
-html nav.glass-card {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 1px solid rgba(15, 160, 140, 0.15) !important;
-  box-shadow: 0 1px 12px rgba(0,0,0,0.06) !important;
-}
-
-html nav a {
-  color: #1e293b !important;
-}
-
-html nav a:hover,
-html nav a.text-primary {
-  color: #0f9e8a !important;
-}
-
-/* ── Status bar at bottom ── */
-html .status-bar {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-top: 1px solid rgba(15, 160, 140, 0.15) !important;
-  box-shadow: 0 -1px 12px rgba(0,0,0,0.05) !important;
-}
-
-html .status-bar,
-html .status-bar * {
-  color: #1e293b !important;
-}
-
-/* ── Buttons ── */
-html .btn-primary-glow {
-  box-shadow: 0 0 16px rgba(15, 160, 140, 0.3), 0 2px 8px rgba(0,0,0,0.1) !important;
-}
-
-html .btn-primary-glow:hover {
-  box-shadow: 0 0 28px rgba(15, 160, 140, 0.45), 0 4px 12px rgba(0,0,0,0.12) !important;
-}
-
-html .btn-outline-glow {
-  border-color: rgba(15, 160, 140, 0.5) !important;
-  color: #0f9e8a !important;
-}
-
-/* ── Text glow — toned down for light ── */
-html .text-glow {
-  text-shadow: 0 0 12px rgba(15, 160, 140, 0.35) !important;
-}
-
-/* ── Particles — barely visible on light bg ── */
-html canvas { opacity: 1 !important; }
-
-/* ── Inputs & selects ── */
-html input,
-html select,
-html textarea {
-  background: #f8fafc !important;
-  border-color: rgba(15, 160, 140, 0.25) !important;
-  color: #0f172a !important;
-}
-
-html input::placeholder {
-  color: #94a3b8 !important;
-}
-
-/* ── Risk badges ── */
-html .risk-badge-safe {
-  background: rgba(15, 160, 140, 0.1) !important;
-  color: #0a7a6a !important;
-  border-color: rgba(15, 160, 140, 0.3) !important;
-}
-
-html .risk-badge-caution {
-  background: rgba(234, 179, 8, 0.1) !important;
-  color: #a16207 !important;
-  border-color: rgba(234, 179, 8, 0.3) !important;
-}
-
-html .risk-badge-critical {
-  background: rgba(220, 38, 38, 0.1) !important;
-  color: #b91c1c !important;
-  border-color: rgba(220, 38, 38, 0.3) !important;
-}
-
-/* ── Chart fixes for light mode ── */
-html .glass-card canvas {
-  opacity: 1 !important;
-}
+/* Shared high-contrast controls */
+select option { background: hsl(var(--card)); color: hsl(var(--foreground)); }
+html .text-foreground\/60, html .text-foreground\/70, html .text-foreground\/50 { color: hsl(var(--muted-foreground)); }
+html .text-foreground\/40, html .text-foreground\/30 { color: hsl(var(--muted-foreground)); }
 
 /* Light, clinical homepage theme — scoped so other pages keep their own look. */
 .home-light {
-  --hl-bg: 150 11% 97%;
-  --hl-alt: 165 23% 94%;
+  --hl-bg: var(--background);
+  --hl-alt: var(--surface-green);
   --hl-card: 0 0% 100%;
-  --hl-ink: 198 54% 14%;
+  --hl-ink: var(--foreground);
   --hl-muted: 200 11% 43%;
   --hl-faint: 197 9% 52%;
-  --hl-teal: 171 100% 33%;
-  --hl-teal-dark: 172 88% 26%;
-  --hl-teal-soft: 165 47% 93%;
-  --hl-border: 168 18% 87%;
+  --hl-teal: var(--primary);
+  --hl-teal-dark: var(--primary-hover);
+  --hl-teal-soft: var(--secondary);
+  --hl-border: var(--border);
   --hl-footer-text: 168 16% 86%;
   position: relative;
   z-index: 0;
@@ -399,7 +229,7 @@ html .glass-card canvas {
   color: hsl(var(--hl-ink));
   font-family: 'Manrope', system-ui, sans-serif;
 }
-.home-light h1, .home-light h2, .home-light h3 { font-family: 'Manrope', system-ui, sans-serif; color: hsl(var(--hl-ink)); letter-spacing: -0.02em; }
+.home-light h1, .home-light h2, .home-light h3 { font-family: 'Sora', system-ui, sans-serif; color: hsl(var(--hl-ink)); letter-spacing: 0; }
 .hl-bg { background: hsl(var(--hl-bg)); }
 .hl-alt { background: hsl(var(--hl-alt)); }
 .hl-ink { color: hsl(var(--hl-ink)); }
@@ -408,15 +238,15 @@ html .glass-card canvas {
 .hl-teal { color: hsl(var(--hl-teal)); }
 .hl-teal-dark { color: hsl(var(--hl-teal-dark)); }
 .hl-border { border-color: hsl(var(--hl-border)); }
-.hl-card { background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 14px; box-shadow: 0 1px 2px hsl(var(--hl-ink) / 0.04); }
+.hl-card { background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 8px; box-shadow: 0 1px 2px hsl(var(--hl-ink) / 0.04); }
 .hl-icon { background: hsl(var(--hl-teal-soft)); color: hsl(var(--hl-teal)); }
-.hl-btn-primary { background: hsl(var(--hl-teal)); color: hsl(0 0% 100%); font-weight: 600; border-radius: 10px; transition: background .2s; }
+.hl-btn-primary { background: hsl(var(--hl-teal)); color: hsl(0 0% 100%); font-weight: 600; border-radius: 8px; transition: background .2s; }
 .hl-btn-primary:hover { background: hsl(var(--hl-teal-dark)); }
-.hl-btn-outline { background: hsl(var(--hl-card)); color: hsl(var(--hl-ink)); border: 1px solid hsl(var(--hl-border)); font-weight: 600; border-radius: 10px; transition: border-color .2s, color .2s; }
+.hl-btn-outline { background: hsl(var(--hl-card)); color: hsl(var(--hl-ink)); border: 1px solid hsl(var(--hl-border)); font-weight: 600; border-radius: 8px; transition: border-color .2s, color .2s; }
 .hl-btn-outline:hover { border-color: hsl(var(--hl-teal-dark)); color: hsl(var(--hl-teal-dark)); }
 .hl-link { color: hsl(var(--hl-muted)); transition: color .2s; }
 .hl-link:hover { color: hsl(var(--hl-teal-dark)); }
-.hl-input { width: 100%; background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 10px; padding: .6rem .75rem; font-size: .875rem; color: hsl(var(--hl-ink)); }
+.hl-input { width: 100%; background: hsl(var(--hl-card)); border: 1px solid hsl(var(--hl-border)); border-radius: 8px; padding: .6rem .75rem; font-size: .875rem; color: hsl(var(--hl-ink)); }
 .hl-input:focus { outline: none; border-color: hsl(var(--hl-teal)); box-shadow: 0 0 0 3px hsl(var(--hl-teal) / 0.15); }
 .hl-nav { background: hsl(var(--hl-bg) / 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid hsl(var(--hl-border)); }
 .hl-footer { background: hsl(var(--hl-ink)); color: hsl(var(--hl-footer-text)); }
@@ -431,7 +261,7 @@ html body {
   color: hsl(var(--foreground));
 }
 
-html h1, html h2, html h3, html h4, html .font-heading {
+html h1, html h2, html h3, html h4 {
   color: hsl(var(--foreground)) !important;
   font-family: 'Sora', sans-serif;
   letter-spacing: 0 !important;
@@ -459,7 +289,7 @@ html nav.glass-card {
 html input,
 html select,
 html textarea {
-  background: hsl(var(--card)) !important;
+  background: hsl(var(--surface-blue)) !important;
   border-color: hsl(var(--border)) !important;
   color: hsl(var(--foreground)) !important;
   border-radius: 8px !important;
@@ -507,8 +337,8 @@ html .btn-primary-glow:hover {
 }
 
 .auth-segment-active {
-  background: hsl(var(--card));
-  color: hsl(var(--foreground));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   box-shadow: 0 1px 3px hsl(var(--foreground) / 0.1);
 }
 
@@ -525,3 +355,30 @@ html .btn-primary-glow:hover {
   .auth-page::before { display: none; }
   .auth-card { padding: 1.5rem; }
 }
+
+/* Clinical colour rhythm: distinct bands, quiet tinted panels, strong actions. */
+.home-intro { background: hsl(var(--surface-blue)); }
+.home-statistics { background: hsl(var(--surface-strong)); color: hsl(var(--surface-strong-foreground)); }
+.home-statistics .hl-teal-dark { color: hsl(var(--primary-foreground)); }
+.home-statistics .hl-muted, .home-statistics .hl-faint { color: hsl(var(--surface-strong-foreground) / 0.8); }
+.home-workflow { background: hsl(var(--surface-green)); }
+.home-demo { background: hsl(var(--secondary)); }
+.home-features { background: hsl(var(--background)); }
+.hl-card { border-top: 3px solid hsl(var(--primary)); }
+.hl-card:nth-child(3n + 2) { background: hsl(var(--surface-green)); border-top-color: hsl(var(--accent)); }
+.hl-card:nth-child(3n + 3) { background: hsl(var(--surface-blue)); }
+.hl-nav { background: hsl(var(--card)); backdrop-filter: none; }
+html main .glass-card { background: hsl(var(--surface-blue)) !important; border-top: 3px solid hsl(var(--primary)) !important; }
+html main .glass-card:nth-child(even) { background: hsl(var(--surface-green)) !important; border-top-color: hsl(var(--accent)) !important; }
+html main .glass-card-tilt { background: hsl(var(--surface-blue)) !important; border-top: 3px solid hsl(var(--primary)) !important; }
+html main .glass-card-tilt:nth-child(even) { background: hsl(var(--surface-green)) !important; border-top-color: hsl(var(--accent)) !important; }
+html nav.glass-card { border-radius: 0 !important; border-top: 3px solid hsl(var(--primary)) !important; }
+html .status-bar { background: hsl(var(--surface-green)); border-top: 1px solid hsl(var(--accent) / 0.35); backdrop-filter: none; }
+.auth-page { background: hsl(var(--secondary)); }
+html .auth-card { border-top: 4px solid hsl(var(--primary)) !important; }
+html .onboarding-card { background: hsl(var(--surface-green)) !important; border-top: 4px solid hsl(var(--accent)) !important; }
+.auth-brand-panel h1 { color: hsl(var(--primary-foreground)) !important; }
+.dropdown-panel { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-panel); }
+.dropdown-option { color: hsl(var(--foreground)); background: hsl(var(--card)); }
+.dropdown-option:hover, .dropdown-option:focus-visible { background: hsl(var(--secondary)); color: hsl(var(--primary)); }
+.dropdown-option[aria-selected="true"] { background: hsl(var(--surface-green)); color: hsl(var(--accent)); }
