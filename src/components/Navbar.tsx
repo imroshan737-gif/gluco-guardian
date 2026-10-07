@@ -47,7 +47,6 @@ export default function Navbar() {
   const [notifOpen, setNotifOpen] = useState(false);
   const [mealLogOpen, setMealLogOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [scrolled, setScrolled] = useState(false);
   const { theme, toggle } = useThemeToggle();
   const notifRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -68,17 +67,6 @@ export default function Navbar() {
     refreshNotifs();
     const interval = setInterval(refreshNotifs, 60000);
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolled(
-        (window.scrollY || document.documentElement.scrollTop) >
-          window.innerHeight * 0.6
-      );
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -128,23 +116,12 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link to={session ? "/dashboard" : "/"} className="flex items-center gap-2">
-            <div
-              className="transition-all duration-500 overflow-hidden flex items-center gap-2"
-              style={{ maxWidth: scrolled ? "300px" : "0px", opacity: scrolled ? 1 : 0 }}
-            >
-              <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
-                <span className="font-heading text-primary text-xs font-bold">GG</span>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center flex-shrink-0">
+                <span className="font-heading text-primary-foreground text-xs font-bold">G</span>
               </div>
-              <span
-                className="font-heading text-sm hidden sm:block whitespace-nowrap"
-                style={{
-                  background: "linear-gradient(135deg, #ffffff 30%, #00F5D4 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                GlucoGuardian
+              <span className="font-heading text-sm font-semibold hidden sm:block whitespace-nowrap text-foreground">
+                GlucoSense
               </span>
             </div>
           </Link>
@@ -192,11 +169,10 @@ export default function Navbar() {
                     <div
                       className="absolute right-0 top-11 w-80 z-50 flex flex-col"
                       style={{
-                        background: "rgba(14, 8, 40, 0.97)",
-                        border: "1px solid rgba(0,245,212,0.18)",
-                        borderRadius: 16,
-                        boxShadow: "0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,245,212,0.05)",
-                        backdropFilter: "blur(24px)",
+                        background: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 8,
+                        boxShadow: "0 16px 40px hsl(var(--foreground) / 0.14)",
                         maxHeight: "70vh",
                         overflow: "hidden",
                       }}
@@ -261,9 +237,9 @@ export default function Navbar() {
                           onClick={() => { setMealLogOpen(true); setNotifOpen(false); }}
                           className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-heading tracking-wider transition-all hover:scale-[1.02]"
                           style={{
-                            background: "linear-gradient(135deg, rgba(0,245,212,0.12), rgba(169,127,240,0.12))",
-                            border: "1px solid rgba(0,245,212,0.2)",
-                            color: "#00F5D4",
+                            background: "hsl(var(--primary) / 0.08)",
+                            border: "1px solid hsl(var(--primary) / 0.2)",
+                            color: "hsl(var(--primary))",
                           }}
                         >
                           🍽 Log a Meal
@@ -363,10 +339,10 @@ export default function Navbar() {
                 {/* SOS */}
                 <button
                   onClick={() => setSosOpen(true)}
-                  className="btn-primary-glow text-xs px-3 py-1.5 rounded-lg flex items-center gap-1"
+                  className="text-xs px-3 py-1.5 rounded-md flex items-center gap-1 bg-destructive text-destructive-foreground font-semibold"
                   style={{
                     background: "hsl(356,82%,56%)",
-                    boxShadow: "0 0 15px rgba(230,57,70,0.4)",
+                    boxShadow: "none",
                   }}
                 >
                   🆘 SOS

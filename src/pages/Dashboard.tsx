@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from "chart.js";
-import ParticlesBackground from "@/components/ParticlesBackground";
 import Navbar from "@/components/Navbar";
 import StatusBar from "@/components/StatusBar";
 import RiskGauge from "@/components/RiskGauge";
@@ -68,10 +67,10 @@ useEffect(() => {
   const insights = latestLog?.insights ?? [];
 
   const metricCards = [
-    { label: 'Last Logged Glucose', value: latestLog?.glucoseReading ? `${latestLog.glucoseReading} mg/dL` : '—', color: '#00ffcc' },
-    { label: 'Current Risk Score', value: `${riskScore}/100`, color: riskScore <= 30 ? '#00ffcc' : riskScore <= 55 ? '#FFB703' : riskScore <= 75 ? '#ff8c00' : '#E63946' },
-    { label: 'Time Since Last Meal', value: latestLog ? getTimeSince(latestLog.lastMealTime) : '—', color: '#ff6ef7' },
-    { label: 'Insulin Status', value: latestLog ? getInsulinStatus(latestLog.insulinTime) : '—', color: '#a97ff0' },
+    { label: 'Last Logged Glucose', value: latestLog?.glucoseReading ? `${latestLog.glucoseReading} mg/dL` : '—', tone: 'text-primary', dot: 'bg-primary' },
+    { label: 'Current Risk Score', value: `${riskScore}/100`, tone: riskScore <= 30 ? 'text-safe' : riskScore <= 55 ? 'text-warning' : 'text-destructive', dot: riskScore <= 30 ? 'bg-safe' : riskScore <= 55 ? 'bg-warning' : 'bg-destructive' },
+    { label: 'Time Since Last Meal', value: latestLog ? getTimeSince(latestLog.lastMealTime) : '—', tone: 'text-foreground', dot: 'bg-accent' },
+    { label: 'Insulin Status', value: latestLog ? getInsulinStatus(latestLog.insulinTime) : '—', tone: 'text-foreground', dot: 'bg-primary' },
   ];
 
   if (!session) return null;
@@ -85,7 +84,6 @@ useEffect(() => {
         {/* Zone 1 — Risk Meter */}
         <div className="text-center mb-10 flex flex-col items-center">
           <div className="relative inline-block">
-            <div className="absolute inset-0 rounded-full blur-3xl opacity-20" style={{ background: 'radial-gradient(circle, #a97ff0 0%, transparent 70%)' }} />
             <RiskGauge score={riskScore} size={300} />
           </div>
           <p className="text-foreground/40 text-xs font-body mt-3 tracking-widest uppercase">
@@ -93,8 +91,7 @@ useEffect(() => {
           </p>
           <button
             onClick={() => setLogModalOpen(true)}
-            className="mt-4 px-8 py-2.5 rounded-full text-xs font-heading uppercase tracking-widest text-black font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #00ffcc, #a97ff0)', boxShadow: '0 0 24px #a97ff055' }}
+            className="btn-primary-glow mt-4 px-6 py-2.5 rounded-md text-sm"
           >
             Update My Status
           </button>
@@ -103,14 +100,12 @@ useEffect(() => {
         {/* Zone 2 — Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {metricCards.map((m, i) => (
-            <GlassTiltCard key={i} className="text-center group transition-all duration-300 hover:scale-[1.03]"
-              style={{ borderTop: `2px solid ${m.color}22`, background: 'rgba(123,76,224,0.12)' }}>
-              <div className="w-8 h-8 rounded-full mx-auto mb-3 flex items-center justify-center"
-                style={{ background: `${m.color}18`, border: `1px solid ${m.color}44` }}>
-                <div className="w-2 h-2 rounded-full" style={{ background: m.color, boxShadow: `0 0 6px ${m.color}` }} />
+            <GlassTiltCard key={i} className="text-center group">
+              <div className="w-8 h-8 rounded-md mx-auto mb-3 flex items-center justify-center bg-secondary border border-border">
+                <div className={`w-2 h-2 rounded-full ${m.dot}`} />
               </div>
-              <p className="text-foreground/40 text-[10px] font-heading uppercase tracking-wider mb-2">{m.label}</p>
-              <p className="text-2xl font-heading font-bold" style={{ color: m.color, textShadow: `0 0 12px ${m.color}66` }}>{m.value}</p>
+              <p className="text-muted-foreground text-[10px] font-body font-bold uppercase tracking-wider mb-2">{m.label}</p>
+              <p className={`text-2xl font-heading font-bold ${m.tone}`}>{m.value}</p>
              
             </GlassTiltCard>
           ))}

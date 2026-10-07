@@ -340,9 +340,7 @@ html .text-glow {
 }
 
 /* ── Particles — barely visible on light bg ── */
-html canvas {
-  opacity: 0.35 !important;
-}
+html canvas { opacity: 1 !important; }
 
 /* ── Inputs & selects ── */
 html input,
