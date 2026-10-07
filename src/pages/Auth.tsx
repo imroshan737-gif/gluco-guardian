@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { saveUser, loginUser, getSession } from "@/lib/glucosense";
 import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Medication {
@@ -339,12 +340,11 @@ export default function AuthPage() {
       {/* ── Step 2 Popup — Profile details ───────────────────────────────── */}
       {step === 2 && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass-card p-8 w-full max-w-md">
+          <div className="glass-card onboarding-card p-8 w-full max-w-md">
             {/* Progress */}
             <div className="flex gap-2 mb-6">
               {[1, 2, 3].map(s => (
-                <div key={s} className="flex-1 h-1 rounded-full"
-                  style={{ background: s <= 2 ? 'rgba(0,245,212,0.8)' : 'rgba(255,255,255,0.1)' }} />
+                <div key={s} className={`flex-1 h-1 rounded-full ${s <= 2 ? 'bg-accent' : 'bg-border'}`} />
               ))}
             </div>
 
@@ -359,39 +359,41 @@ export default function AuthPage() {
               <input type="number" placeholder="Age" value={profileData.age}
                 onChange={e => setProfileData(p => ({ ...p, age: e.target.value }))} className={inputClass} />
             <div className="relative">
-  <button
+  <Button
+    variant="outline"
     type="button"
+    aria-label="Diabetes type"
+    aria-haspopup="listbox"
+    aria-expanded={diabetesDropdownOpen}
     onClick={(e) => { e.stopPropagation(); setDiabetesDropdownOpen(p => !p); }}
-    className={inputClass}
-    style={{ textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+    className={`${inputClass} h-auto justify-between text-left`}
   >
     <span>{profileData.diabetesType}</span>
-    <span style={{ color: '#64748b' }}>{diabetesDropdownOpen ? '▲' : '▼'}</span>
-  </button>
+    <span className="text-muted-foreground">{diabetesDropdownOpen ? '▲' : '▼'}</span>
+  </Button>
 
   {diabetesDropdownOpen && (
     <div
-      className="absolute w-full z-50 rounded-lg overflow-hidden"
-      style={{ background: '#ffffff', border: '1px solid rgba(15,160,140,0.25)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', top: '110%' }}
+      role="listbox"
+      aria-label="Diabetes type options"
+      className="dropdown-panel absolute top-full mt-1 w-full z-50 rounded-lg overflow-hidden"
     >
       {['No Diabetes', 'Type 1 Diabetes', 'Type 2 Diabetes', 'Pre-diabetic', 'At Risk'].map(option => (
-        <div
+        <Button
+          variant="ghost"
+          type="button"
+          role="option"
+          aria-selected={profileData.diabetesType === option}
           key={option}
           onClick={(e) => {
             e.stopPropagation();
             setProfileData(p => ({ ...p, diabetesType: option }));
             setDiabetesDropdownOpen(false);
           }}
-          className="px-4 py-3 text-sm font-body cursor-pointer transition-all"
-          style={{
-            color: profileData.diabetesType === option ? '#00f5d4' : '#ffffff',
-            background: profileData.diabetesType === option ? 'rgba(0,245,212,0.1)' : 'transparent',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,245,212,0.08)')}
-          onMouseLeave={e => (e.currentTarget.style.background = profileData.diabetesType === option ? 'rgba(0,245,212,0.1)' : 'transparent')}
+          className="dropdown-option w-full justify-start rounded-none px-4 py-3 h-auto text-sm font-body"
         >
           {option}
-        </div>
+        </Button>
       ))}
     </div>
   )}
@@ -419,13 +421,12 @@ export default function AuthPage() {
       {/* ── Step 3 Popup — Meals, Medication & Stress ────────────────────── */}
       {step === 3 && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="glass-card p-8 w-full max-w-lg my-8">
+          <div className="glass-card onboarding-card p-8 w-full max-w-lg my-8">
 
             {/* Progress */}
             <div className="flex gap-2 mb-6">
               {[1, 2, 3].map(s => (
-                <div key={s} className="flex-1 h-1 rounded-full"
-                  style={{ background: 'rgba(0,245,212,0.8)' }} />
+                <div key={s} className="flex-1 h-1 rounded-full bg-accent" />
               ))}
             </div>
 

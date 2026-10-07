@@ -127,7 +127,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="hl-bg">
+      <section className="home-intro">
         <div className={`${C} grid md:grid-cols-[1.2fr_1fr] gap-12 items-center py-16 md:py-24`}>
           <div>
             <p className="hl-teal-dark text-sm font-semibold mb-4">Predict · Protect · Prevail</p>
@@ -147,7 +147,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats */}
-      <section className="hl-alt border-y hl-border">
+      <section className="home-statistics border-y hl-border">
         <div className={`${C} grid grid-cols-2 lg:grid-cols-4 gap-6 py-12`}>
           {stats.map((s, i) => (
             <div key={i} className="text-center">
@@ -160,7 +160,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="hl-bg py-24">
+      <section className="home-workflow py-24">
         <div className={C}>
           <h2 className="text-3xl font-bold text-center mb-14">How it works</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -180,7 +180,7 @@ export default function LandingPage() {
       </section>
 
       {/* Interactive Demo */}
-      <section ref={demoRef} className="hl-alt py-24">
+      <section ref={demoRef} className="home-demo py-24">
         <div className={C}>
           <h2 className="text-3xl font-bold text-center mb-3">Interactive demo</h2>
           <p className="text-center hl-muted text-sm mb-12">Enter values below to see a simulated glucose prediction.</p>
@@ -236,7 +236,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="hl-bg py-24">
+      <section className="home-features py-24">
         <div className={C}>
           <h2 className="text-3xl font-bold text-center mb-14">Powerful features</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
