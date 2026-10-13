@@ -211,12 +211,18 @@ html .text-foreground\/40, html .text-foreground\/30 { color: hsl(var(--muted-fo
 
 /* Light, clinical homepage theme — scoped so other pages keep their own look. */
 .home-light {
+  --background: 207 25% 85%;
+  --card: 205 24% 90%;
+  --secondary: 207 30% 81%;
+  --surface-blue: 207 30% 84%;
+  --surface-green: 158 22% 84%;
+  --border: 205 22% 67%;
   --hl-bg: var(--background);
   --hl-alt: var(--surface-green);
-  --hl-card: 0 0% 100%;
+  --hl-card: var(--card);
   --hl-ink: var(--foreground);
-  --hl-muted: 200 11% 43%;
-  --hl-faint: 197 9% 52%;
+  --hl-muted: 205 17% 31%;
+  --hl-faint: 205 13% 36%;
   --hl-teal: var(--primary);
   --hl-teal-dark: var(--primary-hover);
   --hl-teal-soft: var(--secondary);
