@@ -215,41 +215,6 @@ export function generateInsights(entry: Omit<LogEntry, 'id' | 'timestamp' | 'ris
   return insights;
 }
 
-export function generatePredictionData(currentGlucose: number, riskScore: number): { labels: string[]; actual: (number | null)[]; predicted: number[]; upper: number[]; lower: number[] } {
-  const labels: string[] = [];
-  const actual: (number | null)[] = [];
-  const predicted: number[] = [];
-  const upper: number[] = [];
-  const lower: number[] = [];
-  const now = new Date();
-
-  for (let i = -120; i <= 0; i += 15) {
-    const t = new Date(now.getTime() + i * 60000);
-    labels.push(t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    const variance = (Math.random() - 0.5) * 15;
-    const val = currentGlucose + variance + (i / 120) * (riskScore > 50 ? 20 : 5);
-    actual.push(Math.round(val));
-    predicted.push(Math.round(val));
-    upper.push(Math.round(val + 10));
-    lower.push(Math.round(val - 10));
-  }
-
-  const dropRate = riskScore / 100 * 0.5;
-  let lastVal = currentGlucose;
-  for (let i = 15; i <= 120; i += 15) {
-    const t = new Date(now.getTime() + i * 60000);
-    labels.push(t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    actual.push(null);
-    lastVal -= dropRate * 15 * (0.8 + Math.random() * 0.4);
-    const p = Math.round(Math.max(40, lastVal));
-    predicted.push(p);
-    upper.push(Math.round(p + 15 + i / 10));
-    lower.push(Math.round(Math.max(35, p - 15 - i / 10)));
-  }
-
-  return { labels, actual, predicted, upper, lower };
-}
-
 const USERS_KEY = 'glucosense_users';
 const SESSION_KEY = 'glucosense_session';
 const getLogsKey = () => {

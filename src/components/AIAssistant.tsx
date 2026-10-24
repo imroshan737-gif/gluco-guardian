@@ -212,7 +212,7 @@ Blood glucose below 70 mg/dL is considered hypoglycemia. Here's what happens:
 
 **Scientific Reason**: Your brain depends on glucose as its primary fuel. When levels drop, your body releases counter-regulatory hormones (glucagon, epinephrine) causing those symptoms as an alarm system.
 
-⚕️ Always consult your healthcare provider for personalized guidance.`;
+ Always consult your healthcare provider for personalized guidance.`;
   }
 
   if (q.includes("insulin") && (q.includes("work") || q.includes("how"))) {
@@ -230,7 +230,7 @@ Insulin is a peptide hormone produced by beta cells in the pancreas (Islets of L
 - Rapid-acting insulin peaks in 1-2 hours
 - Long-acting insulin provides baseline coverage for 24 hours
 
-⚕️ Insulin dosing should always be managed with your endocrinologist.`;
+ Insulin dosing should always be managed with your endocrinologist.`;
   }
 
   if (q.includes("type 2") || q.includes("type 1") || q.includes("diabetes")) {
@@ -257,7 +257,7 @@ Diabetes is a metabolic disorder affecting how your body processes glucose:
 • Take medications as prescribed
 • Manage stress levels
 
-⚕️ Regular check-ups with your healthcare team are essential.`;
+ Regular check-ups with your healthcare team are essential.`;
   }
 
   if (q.includes("blood pressure") || q.includes("bp") || q.includes("hypertension")) {
@@ -283,7 +283,7 @@ Blood pressure measures the force of blood against artery walls, expressed as sy
 • Maintain healthy weight
 • Limit alcohol and quit smoking
 
-⚕️ Consult your doctor for blood pressure medication decisions.`;
+ Consult your doctor for blood pressure medication decisions.`;
   }
 
   if (q.includes("heart") || q.includes("cardiovascular") || q.includes("cardiac")) {
@@ -309,7 +309,7 @@ People with diabetes are 2-4x more likely to develop cardiovascular disease.
 • Avoid trans fats and excessive saturated fats
 • Don't smoke
 
-⚕️ Get regular cardiac screenings as recommended by your doctor.`;
+ Get regular cardiac screenings as recommended by your doctor.`;
   }
 
   if (q.includes("food") || q.includes("diet") || q.includes("eat") || q.includes("nutrition") || q.includes("meal")) {
@@ -336,7 +336,7 @@ What you eat directly impacts your glucose levels:
 • Balance carbs with protein and fat
 • The "plate method": ½ vegetables, ¼ protein, ¼ whole grains
 
-⚕️ Consider working with a registered dietitian for personalized meal planning.`;
+ Consider working with a registered dietitian for personalized meal planning.`;
   }
 
   if (q.includes("exercise") || q.includes("workout") || q.includes("physical")) {
@@ -362,7 +362,7 @@ Physical activity is one of the most powerful tools for glucose management:
 • Stay hydrated
 • Avoid exercise if glucose >250 mg/dL with ketones
 
-⚕️ Always discuss new exercise programs with your healthcare provider.`;
+ Always discuss new exercise programs with your healthcare provider.`;
   }
 
   if (q.includes("stress") || q.includes("anxiety") || q.includes("mental")) {
@@ -390,7 +390,7 @@ Stress directly impacts glucose levels through hormonal pathways:
 • Social support and community
 • Professional counseling when needed
 
-⚕️ Mental health is as important as physical health in diabetes management.`;
+ Mental health is as important as physical health in diabetes management.`;
   }
 
   // Default response for other medical questions
@@ -414,5 +414,5 @@ Based on medical science, your question touches on important health concepts. Wh
 
 Feel free to ask me anything specific about these topics!
 
-⚕️ For personalized medical advice, always consult your healthcare provider.`;
+ For personalized medical advice, always consult your healthcare provider.`;
 }

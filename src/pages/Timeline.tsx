@@ -45,7 +45,7 @@ export default function Timeline() {
           <>
             {/* AI Summary */}
             <GlassTiltCard className="mb-8 border-primary/30">
-              <h3 className="font-heading text-xs text-primary mb-3">🧠 AI PATTERN ANALYSIS</h3>
+              <h3 className="font-heading text-xs text-primary mb-3"> AI PATTERN ANALYSIS</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-4">
                 <div><p className="text-lg font-heading text-primary">{summary.mostCommonRiskTime}</p><p className="text-[10px] text-foreground/40 font-body">Most Common Risk Time</p></div>
                 <div><p className="text-lg font-heading text-warning">{summary.avgRiskScore}</p><p className="text-[10px] text-foreground/40 font-body">Average Risk Score</p></div>
@@ -63,7 +63,7 @@ export default function Timeline() {
                 </button>
               ))}
               <button onClick={handleDownload} className="ml-auto text-xs font-heading px-3 py-1.5 rounded-lg glass-card text-foreground/40 hover:text-primary transition-colors">
-                📥 Download Report
+                 Download Report
               </button>
             </div>
 
@@ -88,7 +88,7 @@ export default function Timeline() {
                       <span>Sleep: {log.sleepHours}h</span>
                     </div>
                     {log.insights[0] && (
-                      <p className="text-[11px] text-foreground/60 font-body mt-2 italic">💡 {log.insights[0].text}</p>
+                      <p className="text-[11px] text-foreground/60 font-body mt-2 italic"> {log.insights[0].text}</p>
                     )}
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export default function Timeline() {
           </>
         ) : (
           <div className="text-center py-24">
-            <div className="text-6xl mb-4">📊</div>
+            
             <h3 className="font-heading text-lg mb-2">No Sessions Logged Yet</h3>
             <p className="text-foreground/40 font-body text-sm mb-6">Start logging your health data to see your timeline.</p>
             <Link to="/predictor" className="btn-primary-glow px-6 py-2 rounded-xl text-sm inline-block">Log Your First Session</Link>

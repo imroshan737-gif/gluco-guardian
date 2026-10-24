@@ -142,7 +142,7 @@ export default function Settings() {
                 color: '#00F5D4',
               }}
             >
-              💪 View My Health & Workout Plan
+               View My Health & Workout Plan
             </button>
           )}
 
@@ -192,7 +192,7 @@ export default function Settings() {
                   className="p-3 rounded-xl text-xs font-body"
                   style={{ background: 'rgba(0,245,212,0.06)', border: '1px solid rgba(0,245,212,0.2)', color: '#00F5D4' }}
                 >
-                  ✓ {form.emergencyContactName} ({form.emergencyContactRelation || 'Contact'}) · {form.emergencyContactNumber}
+                   {form.emergencyContactName} ({form.emergencyContactRelation || 'Contact'}) · {form.emergencyContactNumber}
                 </div>
               )}
             </div>
@@ -243,7 +243,7 @@ export default function Settings() {
 
           {/* ── Save ── */}
           <button onClick={handleSave} className="btn-primary-glow w-full py-3 rounded-xl text-sm">
-            {saved ? '✓ Saved' : 'Save Changes'}
+            {saved ? ' Saved' : 'Save Changes'}
           </button>
 
           {/* ── Consult a Doctor ── */}
@@ -298,7 +298,7 @@ export default function Settings() {
                     <p className="text-[10px] text-foreground/40 font-body">{doc.specialty} · {doc.experience}</p>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-[10px] text-yellow-400">
-                        {'★'.repeat(Math.floor(doc.rating))}{'☆'.repeat(5 - Math.floor(doc.rating))}
+                        {''.repeat(Math.floor(doc.rating))}{''.repeat(5 - Math.floor(doc.rating))}
                       </span>
                       <span className="text-[9px] text-foreground/30 font-body">{doc.rating} ({doc.reviews} reviews)</span>
                     </div>
@@ -321,7 +321,7 @@ export default function Settings() {
                         cursor: 'not-allowed',
                       }}
                     >
-                      {bookedDoctor === doc.name ? '✓ Booked' : doc.available ? 'Book' : 'Unavailable'}
+                      {bookedDoctor === doc.name ? ' Booked' : doc.available ? 'Book' : 'Unavailable'}
                     </button>
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function Settings() {
                 className="mt-4 p-3 rounded-xl text-xs font-body"
                 style={{ background: 'rgba(0,245,212,0.06)', border: '1px solid rgba(0,245,212,0.2)', color: '#00F5D4' }}
               >
-                ✓ Appointment requested with <strong>{bookedDoctor}</strong>. They will contact you shortly on your registered number.
+                 Appointment requested with <strong>{bookedDoctor}</strong>. They will contact you shortly on your registered number.
               </div>
             )}
           </GlassTiltCard>
@@ -344,14 +344,14 @@ export default function Settings() {
               className="flex-1 glass-card py-3 text-sm font-heading text-primary text-center hover:bg-primary/10 transition-colors"
               style={{ borderRadius: 12 }}
             >
-              📤 Export Data as JSON
+               Export Data as JSON
             </button>
             <button
               onClick={handleReset}
               className="flex-1 glass-card py-3 text-sm font-heading text-destructive text-center hover:bg-destructive/10 transition-colors"
               style={{ borderRadius: 12 }}
             >
-              🗑️ Reset All Data
+               Reset All Data
             </button>
           </div>
 

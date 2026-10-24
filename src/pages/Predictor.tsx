@@ -177,7 +177,7 @@ export default function Predictor() {
                   <span className="flex gap-1">{[0, 1, 2].map(i => <span key={i} className="w-1.5 h-1.5 bg-primary-foreground rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}</span>
                   Analyzing...
                 </span>
-              ) : '🔮 Predict My Risk Now'}
+              ) : ' Predict My Risk Now'}
             </button>
           </div>
 
@@ -192,7 +192,7 @@ export default function Predictor() {
                   <RiskGauge score={result.riskScore} size={200} />
                   <p className="text-foreground/40 text-xs font-body mt-2">Confidence: {result.confidence}%</p>
                   {result.timeToHypo !== 'N/A' && (
-                    <p className="text-warning text-xs font-body mt-1">⏱ Est. time to hypoglycaemia: {result.timeToHypo}</p>
+                    <p className="text-warning text-xs font-body mt-1"> Est. time to hypoglycaemia: {result.timeToHypo}</p>
                   )}
                 </GlassTiltCard>
 
@@ -217,13 +217,13 @@ export default function Predictor() {
                 {/* Actions */}
                 <div className="grid grid-cols-3 gap-2">
                   <button className="glass-card p-3 text-[10px] font-heading text-center text-safe hover:bg-safe/10 transition-colors">
-                    🍎 Log a Protective Snack
+                     Log a Protective Snack
                   </button>
                   <button onClick={setReminder} className="glass-card p-3 text-[10px] font-heading text-center text-warning hover:bg-warning/10 transition-colors">
-                    ⏰ Set 30-Min Reminder
+                     Set 30-Min Reminder
                   </button>
                   <button onClick={() => navigator.clipboard.writeText(result.summary)} className="glass-card p-3 text-[10px] font-heading text-center text-primary hover:bg-primary/10 transition-colors">
-                    📋 Copy for Doctor
+                     Copy for Doctor
                   </button>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function Predictor() {
         </div>
 
         <p className="text-center text-[10px] text-foreground/30 font-body mt-8 max-w-xl mx-auto">
-          ⚕️ This tool is for informational and educational purposes only. Not a substitute for medical advice. Always consult your healthcare provider.
+           This tool is for informational and educational purposes only. Not a substitute for medical advice. Always consult your healthcare provider.
         </p>
       </main>
       <StatusBar />

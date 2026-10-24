@@ -240,20 +240,20 @@ export default function HealthPlan() {
 
           {/* Warning */}
           <div className="mt-4 p-3 rounded-xl text-xs font-body" style={{ background: `${bmi.color}12`, border: `1px solid ${bmi.color}30`, color: bmi.color }}>
-            ⚠️ {plan.warning}
+             {plan.warning}
           </div>
         </GlassTiltCard>
 
         {/* Calorie Burn Chart */}
         <GlassTiltCard className="mb-6">
-          <h3 className="font-heading text-xs text-primary mb-4">📊 ESTIMATED WEEKLY CALORIE BURN</h3>
+          <h3 className="font-heading text-xs text-primary mb-4"> ESTIMATED WEEKLY CALORIE BURN</h3>
           <Bar data={calorieData} options={chartOptions} />
           <p className="text-[10px] text-foreground/30 font-body mt-2 text-center">Rest days shown as 0. Estimates based on your BMI category and plan intensity.</p>
         </GlassTiltCard>
 
         {/* Workout Plan */}
         <GlassTiltCard className="mb-6">
-          <h3 className="font-heading text-xs text-primary mb-1">💪 YOUR 4-WEEK WORKOUT PLAN</h3>
+          <h3 className="font-heading text-xs text-primary mb-1"> YOUR 4-WEEK WORKOUT PLAN</h3>
           <p className="text-[10px] text-foreground/40 font-body mb-4">Goal: {plan.goal}</p>
 
           <div className="space-y-5">
@@ -286,17 +286,17 @@ export default function HealthPlan() {
 
         {/* Cardio recommendation */}
         <GlassTiltCard className="mb-6">
-          <h3 className="font-heading text-xs text-primary mb-3">🏃 CARDIO RECOMMENDATION</h3>
+          <h3 className="font-heading text-xs text-primary mb-3"> CARDIO RECOMMENDATION</h3>
           <p className="text-sm font-body text-foreground/70">{plan.cardio}</p>
         </GlassTiltCard>
 
         {/* Nutrition */}
         <GlassTiltCard className="mb-6">
-          <h3 className="font-heading text-xs text-primary mb-3">🥗 NUTRITION GUIDELINES</h3>
+          <h3 className="font-heading text-xs text-primary mb-3"> NUTRITION GUIDELINES</h3>
           <ul className="space-y-2">
             {plan.nutrition.map((tip, i) => (
               <li key={i} className="flex items-start gap-2 text-xs font-body text-foreground/70">
-                <span className="text-primary mt-0.5">✓</span> {tip}
+                <span className="text-primary mt-0.5"></span> {tip}
               </li>
             ))}
           </ul>
@@ -304,7 +304,7 @@ export default function HealthPlan() {
 
         {/* Glucose + Exercise note */}
         <GlassTiltCard className="mb-6">
-          <h3 className="font-heading text-xs text-warning mb-3">⚡ GLUCOSE & EXERCISE SAFETY</h3>
+          <h3 className="font-heading text-xs text-warning mb-3"> GLUCOSE & EXERCISE SAFETY</h3>
           <ul className="space-y-2 text-xs font-body text-foreground/70">
             <li className="flex gap-2"><span className="text-warning">•</span> Check glucose before every workout</li>
             <li className="flex gap-2"><span className="text-warning">•</span> If below 100 mg/dL — eat 15g carbs first</li>

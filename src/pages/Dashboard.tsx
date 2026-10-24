@@ -7,10 +7,13 @@ import StatusBar from "@/components/StatusBar";
 import RiskGauge from "@/components/RiskGauge";
 import GlassTiltCard from "@/components/GlassTiltCard";
 import QuickLogModal from "@/components/QuickLogModal";
+import { Pill, Utensils } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import GlucosePredictionChart from "@/components/GlucosePredictionChart";
 import { useRef } from "react";
 import {
   getSession, getLatestLog, getRiskLevel, getRiskLabel,
-  getInsulinStatus, getTimeSince, generatePredictionData, getLogs
+  getInsulinStatus, getTimeSince, getLogs
 } from "@/lib/glucosense";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
@@ -58,10 +61,6 @@ useEffect(() => {
   const latestLog = getLatestLog();
   const riskScore = latestLog?.riskScore ?? 0;
   const riskLevel = getRiskLevel(riskScore);
-
-  // Prediction chart data
-  const glucose = latestLog?.glucoseReading ?? 110;
-  const predData = generatePredictionData(glucose, riskScore);
 
   // Insights
   const insights = latestLog?.insights ?? [];
@@ -113,79 +112,7 @@ useEffect(() => {
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Zone 3 — Prediction Graph */}
-          <div className="lg:col-span-2 glass-card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading text-sm">Glucose Prediction</h3>
-              <div className="flex gap-1">
-                {['1H', '3H', '6H', '24H'].map(t => (
-                  <button key={t} onClick={() => setTimeRange(t)} className={`text-[10px] font-heading px-2 py-1 rounded-md transition-colors ${timeRange === t ? 'bg-primary/20 text-primary' : 'text-foreground/30 hover:text-foreground/60'}`}>{t}</button>
-                ))}
-              </div>
-            </div>
-            {latestLog ? (
-              <Line
-                data={{
-                  labels: predData.labels,
-                  datasets: [
-                    { label: 'Actual', data: predData.actual, borderColor: '#00F5D4', backgroundColor: 'rgba(0,245,212,0.05)', fill: true, tension: 0.4, spanGaps: false, pointRadius: 2 },
-                    { label: 'Predicted', data: predData.predicted, borderColor: '#FFB703', borderDash: [6, 4], backgroundColor: 'rgba(255,183,3,0.03)', fill: true, tension: 0.4, pointRadius: 0 },
-                    { label: 'Upper bound', data: predData.upper, borderColor: 'transparent', backgroundColor: 'rgba(255,183,3,0.05)', fill: '+1', pointRadius: 0 },
-                    { label: 'Lower bound', data: predData.lower, borderColor: 'transparent', backgroundColor: 'transparent', fill: false, pointRadius: 0 },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                      backgroundColor: 'rgba(60,28,140,0.97)',
-                      borderColor: 'rgba(169,127,240,0.3)',
-                      borderWidth: 1,
-                      titleFont: { family: 'Orbitron', size: 10 },
-                      bodyFont: { family: 'DM Sans', size: 11 },
-                      padding: 12,
-                      callbacks: { afterBody: () => riskScore > 50 ? ['⚠ Elevated risk — insulin may still be active'] : ['✓ Glucose trajectory looks stable'] },
-                    },
-                  },
-                 scales: {
-  x: {
-    ticks: {
-      color: document.documentElement.classList.contains('light')
-        ? '#334155' : 'rgba(169,127,240,0.5)',
-      font: { family: 'DM Sans', size: 8 },
-      maxTicksLimit: 8
-    },
-    grid: {
-      color: document.documentElement.classList.contains('light')
-        ? 'rgba(0,0,0,0.08)' : 'rgba(123,76,224,0.08)'
-    }
-  },
-  y: {
-    min: 40, max: 180,
-    ticks: {
-      color: document.documentElement.classList.contains('light')
-        ? '#334155' : 'rgba(169,127,240,0.5)',
-      font: { family: 'DM Sans', size: 9 }
-    },
-    grid: {
-      color: document.documentElement.classList.contains('light')
-        ? 'rgba(0,0,0,0.08)' : 'rgba(123,76,224,0.12)'
-    }
-  },
-},
-                }}
-              />
-            ) : (
-              <div className="h-48 flex items-center justify-center text-foreground/30 text-sm font-body">
-                Log your first session to see predictions.
-              </div>
-            )}
-            <div className="mt-2 flex items-center gap-4 text-[10px] text-foreground/30 font-body">
-              <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-primary inline-block" /> Actual</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-warning inline-block" style={{ borderBottom: '1px dashed' }} /> Predicted</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-destructive inline-block" /> Hypo threshold (70 mg/dL)</span>
-            </div>
-          </div>
+          <GlucosePredictionChart logs={getLogs()} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
 
           {/* Zone 4 — AI Insight Feed */}
           <div className="glass-card p-4">
@@ -209,7 +136,7 @@ useEffect(() => {
   style={{ background: 'rgba(0,245,212,0.15)', border: '1px solid rgba(0,245,212,0.4)' }}
   title="My Medications"
 >
-  <span style={{ fontSize: 24 }}>💊</span>
+  <Pill className="text-primary" size={24} />
   {(session?.medications?.length ?? 0) > 0 && (
     <span
       className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-heading flex items-center justify-center"
@@ -232,20 +159,20 @@ useEffect(() => {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-heading text-lg font-bold">My Medications 💊</h3>
+        <h3 className="font-heading text-lg font-bold">My Medications </h3>
         <button
           onClick={() => setShowMedPanel(false)}
           className="text-foreground/40 hover:text-foreground transition-colors text-xl"
-        >✕</button>
+        ></button>
       </div>
 
       {/* Meal Times Summary */}
       <div className="mb-6">
         <p className="text-xs text-primary font-heading tracking-widest uppercase mb-3">Meal Schedule</p>
         {[
-          { label: '🌅 Breakfast', time: session?.mealTimes?.breakfast },
-          { label: '☀️  Lunch',     time: session?.mealTimes?.lunch     },
-          { label: '🌙 Dinner',    time: session?.mealTimes?.dinner    },
+          { label: ' Breakfast', time: session?.mealTimes?.breakfast },
+          { label: '  Lunch',     time: session?.mealTimes?.lunch     },
+          { label: ' Dinner',    time: session?.mealTimes?.dinner    },
         ].map(({ label, time }) => (
           <div key={label} className="flex justify-between items-center py-2 border-b border-primary/10">
             <span className="text-sm font-body text-foreground/60">{label}</span>
@@ -268,9 +195,9 @@ useEffect(() => {
             return (
               <div key={i} className="bg-muted/20 border border-primary/10 rounded-xl p-4 mb-3">
                 <p className="font-heading text-sm text-foreground mb-1">{med.name}</p>
-                <p className="text-xs text-foreground/40 font-body">📅 {activeMeals || 'No schedule set'}</p>
+                <p className="text-xs text-foreground/40 font-body"> {activeMeals || 'No schedule set'}</p>
                 <p className="text-xs text-foreground/40 font-body mt-1">
-                  🕐 {med.timing === 'before' ? 'Before food' : 'After food'}
+                   {med.timing === 'before' ? 'Before food' : 'After food'}
                 </p>
               </div>
             );
@@ -290,7 +217,7 @@ useEffect(() => {
             <div key={meal} className="flex justify-between items-center py-2 border-b border-primary/10">
               <span className="text-sm font-body text-foreground/60">{meal}</span>
               <span className={`text-xs font-heading px-2 py-1 rounded-full ${choice === 'yes' ? 'bg-primary/20 text-primary' : 'bg-destructive/20 text-destructive'}`}>
-                {choice === 'yes' ? '✓ Had meal' : '✗ Skipped'}
+                {choice === 'yes' ? ' Had meal' : ' Skipped'}
               </span>
             </div>
           ))}
@@ -305,7 +232,7 @@ useEffect(() => {
   <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div className="glass-card p-8 w-full max-w-sm text-center">
       <div className="text-5xl mb-4">
-        {mealPopup.meal === 'Breakfast' ? '🌅' : mealPopup.meal === 'Lunch' ? '☀️' : '🌙'}
+        <Utensils className="mx-auto text-primary" size={40} />
       </div>
       <h3 className="font-heading text-xl font-bold mb-2">
         {mealPopup.meal} Time!
@@ -323,7 +250,7 @@ useEffect(() => {
           className="flex-1 py-3 rounded-xl font-heading text-sm font-bold transition-all hover:scale-105"
           style={{ background: 'rgba(0,245,212,0.2)', border: '1px solid rgba(0,245,212,0.5)', color: '#00f5d4' }}
         >
-          ✓ Yes I did
+           Yes I did
         </button>
         <button
           onClick={() => {
@@ -333,7 +260,7 @@ useEffect(() => {
           className="flex-1 py-3 rounded-xl font-heading text-sm font-bold transition-all hover:scale-105"
           style={{ background: 'rgba(229,57,70,0.15)', border: '1px solid rgba(229,57,70,0.4)', color: '#E63946' }}
         >
-          ✗ Not yet
+           Not yet
         </button>
       </div>
 
@@ -347,7 +274,7 @@ useEffect(() => {
           <div key={i} className="mt-4 p-3 rounded-xl text-left"
             style={{ background: 'rgba(169,127,240,0.1)', border: '1px solid rgba(169,127,240,0.2)' }}>
             <p className="text-xs font-heading text-purple-300">
-              💊 Remember: Take <strong>{med.name}</strong> {med.timing} your meal
+               Remember: Take <strong>{med.name}</strong> {med.timing} your meal
             </p>
           </div>
         ))

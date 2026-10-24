@@ -11,7 +11,7 @@ import {
 } from "@/lib/notifications";
 import EmergencySOSModal from "./EmergencySOSModal";
 import QuickLogModal from "./QuickLogModal";
-import { Bell, Menu, Sun, Moon, LogOut, User, X, CheckCheck, Trash2 } from "lucide-react";
+import { Bell, Menu, Sun, Moon, LogOut, User, X, CheckCheck, Trash2, Siren, ClipboardList, Brain } from "lucide-react";
 
 function useThemeToggle() {
   const [theme, setTheme] = useState<"dark" | "light">(() => {
@@ -33,12 +33,7 @@ const severityColor: Record<string, string> = {
   safe: "#00F5D4",
 };
 
-const typeIcon: Record<string, string> = {
-  alert: "🚨",
-  reminder: "⏰",
-  activity: "📋",
-  insight: "🧠",
-};
+const typeIcon = { alert: Siren, reminder: Bell, activity: ClipboardList, insight: Brain };
 
 export default function Navbar() {
   const [sosOpen, setSosOpen] = useState(false);
@@ -228,7 +223,7 @@ export default function Navbar() {
                         </div>
                       </div>
 
-                      {/* 🍽 Log a Meal shortcut */}
+                      {/*  Log a Meal shortcut */}
                       <div
                         className="px-3 py-2 flex-shrink-0"
                         style={{ borderBottom: "1px solid rgba(0,245,212,0.08)" }}
@@ -242,7 +237,7 @@ export default function Navbar() {
                             color: "hsl(var(--primary))",
                           }}
                         >
-                          🍽 Log a Meal
+                           Log a Meal
                         </button>
                       </div>
 
@@ -262,6 +257,7 @@ export default function Navbar() {
                           <div className="p-2 space-y-1">
                             {notifications.map((n) => {
                               const color = severityColor[n.severity || "safe"];
+                              const NotificationIcon = typeIcon[n.type];
                               return (
                                 <div
                                   key={n.id}
@@ -284,7 +280,7 @@ export default function Navbar() {
                                   }}
                                 >
                                   <span className="text-base mt-0.5 flex-shrink-0">
-                                    {typeIcon[n.type]}
+                                    <NotificationIcon size={16} />
                                   </span>
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-1 mb-0.5">
@@ -345,7 +341,7 @@ export default function Navbar() {
                     boxShadow: "none",
                   }}
                 >
-                  🆘 SOS
+                   SOS
                 </button>
 
                 {/* Profile avatar + dropdown */}
@@ -389,7 +385,7 @@ export default function Navbar() {
                           {theme === "dark" ? "Light Mode" : "Dark Mode"}
                         </span>
                         <span className="text-xs text-foreground/30">
-                          {theme === "dark" ? "☀️" : "🌙"}
+                          {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
                         </span>
                       </button>
 
@@ -451,7 +447,7 @@ export default function Navbar() {
                 onClick={toggle}
                 className="block w-full text-left py-2 text-sm text-foreground/70 hover:text-primary transition-colors"
               >
-                {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
+                {theme === "dark" ? " Light Mode" : " Dark Mode"}
               </button>
               <button onClick={handleLogout} className="mt-1 text-sm text-destructive">
                 Logout
