@@ -348,7 +348,7 @@ export default function AuthPage() {
               ))}
             </div>
 
-            <h2 className="font-heading text-2xl font-bold mb-1 text-center">One More Step 👋</h2>
+            <h2 className="font-heading text-2xl font-bold mb-1 text-center">One More Step </h2>
             <p className="text-foreground/40 text-sm text-center font-body mb-6">
               Help us personalise your glucose monitoring
             </p>
@@ -430,7 +430,7 @@ export default function AuthPage() {
               ))}
             </div>
 
-            <h2 className="font-heading text-2xl font-bold mb-1 text-center">Your Daily Routine 🍽️</h2>
+            <h2 className="font-heading text-2xl font-bold mb-1 text-center">Your Daily Routine </h2>
             <p className="text-foreground/40 text-sm text-center font-body mb-6">
               Set your meal times, medications & stress baseline
             </p>
@@ -464,7 +464,7 @@ export default function AuthPage() {
                     background: onMedication ? 'rgba(0,245,212,0.2)' : 'transparent'
                   }}
                 >
-                  {onMedication && <span style={{ color: '#00f5d4', fontSize: 12 }}>✓</span>}
+                  {onMedication && <span style={{ color: '#00f5d4', fontSize: 12 }}></span>}
                 </div>
                 <span className="text-sm font-body text-foreground/70 group-hover:text-foreground transition-colors">
                   I am currently on medication
@@ -593,11 +593,11 @@ export default function AuthPage() {
               />
 
               <div className="flex justify-between text-xs text-foreground/30 font-body mt-1">
-                <span>😌 Calm</span>
+                <span> Calm</span>
                 <span style={{ color: stressColor }} className="font-heading">
                   {stressLevel}/10 — {stressLevel <= 3 ? 'Low' : stressLevel <= 6 ? 'Moderate' : 'High'}
                 </span>
-                <span>😰 High Stress</span>
+                <span> High Stress</span>
               </div>
             </div>
 
@@ -606,7 +606,7 @@ export default function AuthPage() {
               onClick={handleFinalSubmit}
               className="btn-primary-glow w-full py-3 rounded-xl text-sm"
             >
-              Let's Go 🚀
+              Let's Go 
             </button>
             <button onClick={() => { setStep(2); setError(''); }}
               className="w-full text-foreground/30 hover:text-primary text-xs font-body mt-3 transition-colors">
