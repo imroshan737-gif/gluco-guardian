@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import { Info } from "lucide-react";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler } from "chart.js";
+import { Chart as ChartJS, LinearScale, PointElement, LineElement, Tooltip as ChartTooltip, Legend, Filler } from "chart.js";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tooltip as InfoTooltip, TooltipContent, TooltipTrigger as InfoTooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { forecastFromLogs, forecastMetadata as model } from "@/lib/glucose-forecast";
 import type { LogEntry } from "@/lib/glucosense";
 
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
+ChartJS.register(LinearScale, PointElement, LineElement, ChartTooltip, Legend, Filler);
 
 interface Props { logs: LogEntry[]; timeRange: string; onTimeRangeChange: (range: string) => void }
 
@@ -29,14 +29,14 @@ export default function GlucosePredictionChart({ logs, timeRange, onTimeRangeCha
 
   return (
     <section className="lg:col-span-2 glass-card p-4 sm:p-6 relative min-w-0" aria-label="Glucose prediction">
-      <InfoTooltip>
-        <InfoTooltipTrigger asChild>
+      <Tooltip>
+        <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="absolute right-1 top-1 h-8 w-8 text-primary" aria-label="How glucose prediction is calculated" onClick={() => setInfoOpen(true)}>
             <Info />
           </Button>
-        </InfoTooltipTrigger>
+        </TooltipTrigger>
         <TooltipContent>Model, calculation and research evidence</TooltipContent>
-      </InfoTooltip>
+      </Tooltip>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3 pr-6">
         <h3 className="font-heading text-sm">Glucose Prediction</h3>
         <div className="flex gap-1" aria-label="Recorded history range">
