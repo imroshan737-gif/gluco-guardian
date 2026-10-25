@@ -4,7 +4,7 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler } from "chart.js";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tooltip as InfoTooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip as InfoTooltip, TooltipContent, TooltipTrigger as InfoTooltipTrigger } from "@/components/ui/tooltip";
 import { forecastFromLogs, forecastMetadata as model } from "@/lib/glucose-forecast";
 import type { LogEntry } from "@/lib/glucosense";
 
