@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Info } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Info, Plus } from "lucide-react";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LinearScale, PointElement, LineElement, Tooltip as ChartTooltip, Legend, Filler } from "chart.js";
 import { Button } from "@/components/ui/button";
@@ -10,22 +10,27 @@ import type { LogEntry } from "@/lib/glucosense";
 
 ChartJS.register(LinearScale, PointElement, LineElement, ChartTooltip, Legend, Filler);
 
-interface Props { logs: LogEntry[]; timeRange: string; onTimeRangeChange: (range: string) => void }
+interface Props { logs: LogEntry[]; timeRange: string; onTimeRangeChange: (range: string) => void; onLogReading?: () => void }
 
-export default function GlucosePredictionChart({ logs, timeRange, onTimeRangeChange }: Props) {
+export default function GlucosePredictionChart({ logs, timeRange, onTimeRangeChange, onLogReading }: Props) {
   const [infoOpen, setInfoOpen] = useState(false);
-  const forecast = useMemo(() => forecastFromLogs(logs), [logs]);
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+  const forecast = useMemo(() => forecastFromLogs(logs, now), [logs, now]);
   const css = getComputedStyle(document.documentElement);
   const color = (token: string, alpha = 1) => `hsl(${css.getPropertyValue(`--${token}`).trim()} / ${alpha})`;
-  const now = Date.now();
   const hours = Number.parseInt(timeRange);
-  const readings = forecast.readings.filter(reading => reading.timestamp >= now - hours * 3600_000);
+  const latest = forecast.readings.at(-1);
+  const readings = timeRange === "All" ? forecast.readings : forecast.readings.filter(reading => reading.timestamp >= now - hours * 3600_000);
   const actual = readings.map(reading => ({ x: reading.timestamp, y: reading.glucose }));
   const predicted = forecast.anchor ? [{ x: forecast.anchor.timestamp, y: forecast.anchor.glucose }, ...forecast.points.map(point => ({ x: point.timestamp, y: point.glucose }))] : [];
   const lower = forecast.points.map(point => ({ x: point.timestamp, y: point.lower }));
   const upper = forecast.points.map(point => ({ x: point.timestamp, y: point.upper }));
-  const end = Math.max(now, forecast.points[forecast.points.length - 1]?.timestamp ?? now);
-  const start = now - hours * 3600_000;
+  const end = Math.max(now + 60_000, forecast.points.at(-1)?.timestamp ?? now);
+  const start = timeRange === "All" ? Math.min(now - 3600_000, (forecast.readings[0]?.timestamp ?? now) - 60_000) : now - hours * 3600_000;
 
   return (
     <section className="lg:col-span-2 glass-card p-4 sm:p-6 relative min-w-0" aria-label="Glucose prediction">
@@ -40,32 +45,43 @@ export default function GlucosePredictionChart({ logs, timeRange, onTimeRangeCha
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3 pr-6">
         <h3 className="font-heading text-sm">Glucose Prediction</h3>
         <div className="flex gap-1" aria-label="Recorded history range">
-          {["1H", "3H", "6H", "24H"].map(range => (
+          {["1H", "3H", "6H", "24H", "All"].map(range => (
             <Button key={range} variant={timeRange === range ? "secondary" : "ghost"} size="sm" className="h-7 px-2 text-xs" aria-pressed={timeRange === range} onClick={() => onTimeRangeChange(range)}>{range}</Button>
           ))}
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">{timeRange} recorded history · {forecast.points.length ? "60-minute experimental forecast" : "Forecast awaiting eligible readings"}</p>
-      <div className="h-64 sm:h-72 w-full">
-        {readings.length > 0 ? (
+      <p className="text-xs text-muted-foreground mb-4">{timeRange === "All" ? "All recorded history" : `${timeRange} recorded history`} · {forecast.points.length ? "60-minute experimental forecast" : "Forecast awaiting eligible readings"}</p>
+      <dl className="grid grid-cols-3 gap-3 border-y border-border py-3 mb-4">
+        <div><dt className="text-xs text-muted-foreground">Latest recorded</dt><dd className="font-heading text-lg text-primary mt-1">{latest ? `${latest.glucose} mg/dL` : "—"}</dd>{latest && <p className="text-xs text-muted-foreground mt-1">{new Date(latest.timestamp).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>}</div>
+        <div><dt className="text-xs text-muted-foreground">Readings in view</dt><dd className="font-heading text-lg mt-1">{readings.length}</dd></div>
+        <div><dt className="text-xs text-muted-foreground">60-min forecast</dt><dd className="font-heading text-lg text-accent mt-1">{forecast.points.at(-1) ? `${forecast.points.at(-1)?.glucose} mg/dL` : "Not available"}</dd></div>
+      </dl>
+      <div className="h-64 sm:h-72 w-full relative">
           <Line data={{ datasets: [
-            { label: "Recorded", data: actual, borderColor: color("primary"), backgroundColor: color("primary"), pointRadius: 3, tension: 0, fill: false },
+            { label: "Recorded", data: actual, borderColor: color("primary"), backgroundColor: color("primary"), pointRadius: 5, pointHoverRadius: 7, borderWidth: 3, tension: 0, fill: false },
             { label: "Experimental forecast", data: predicted, borderColor: color("accent"), backgroundColor: color("accent"), borderDash: [6,4], pointRadius: 2, tension: 0, fill: false },
             { label: "Upper empirical error band", data: upper, borderColor: color("accent",0), backgroundColor: color("accent",0.10), fill: "+1", pointRadius: 0 },
             { label: "Lower empirical error band", data: lower, borderColor: color("accent",0), pointRadius: 0, fill: false },
             { label: "Hypo threshold (70 mg/dL)", data: [{x:start,y:70},{x:end,y:70}], borderColor: color("destructive"), borderDash: [3,3], pointRadius: 0, fill: false },
           ] }} options={{ responsive: true, maintainAspectRatio: false, animation: false, parsing: false,
             plugins: { legend: {display:false}, tooltip: {backgroundColor:color("surface-strong"),titleColor:color("surface-strong-foreground"),bodyColor:color("surface-strong-foreground"),titleFont:{family:"Sora"},bodyFont:{family:"Manrope"},callbacks:{ title: items => items[0] ? new Date(items[0].parsed.x).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "", label: item => `${item.dataset.label}: ${item.parsed.y?.toFixed(1)} mg/dL` }} },
-            scales: { x: {type:"linear",min:start,max:end,ticks:{color:color("muted-foreground"),maxTicksLimit:6,font:{family:"Manrope",size:10},callback:value=>new Date(Number(value)).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})},grid:{color:color("border",0.4)}}, y: {suggestedMin:40,suggestedMax:180,title:{display:true,text:"mg/dL",color:color("muted-foreground")},ticks:{color:color("muted-foreground"),font:{family:"Manrope",size:10}},grid:{color:color("border",0.4)}} }
+            scales: { x: {type:"linear",min:start,max:end,ticks:{color:color("muted-foreground"),maxTicksLimit:6,font:{family:"Manrope",size:10},callback:value=>new Date(Number(value)).toLocaleString([], {...(end-start > 86400_000 ? {month:"short" as const,day:"numeric" as const} : {}),hour:"2-digit",minute:"2-digit"})},grid:{color:color("border",0.6)}}, y: {suggestedMin:40,suggestedMax:180,title:{display:true,text:"mg/dL",color:color("muted-foreground")},ticks:{color:color("muted-foreground"),font:{family:"Manrope",size:10}},grid:{color:color("border",0.6)}} }
           }} />
-        ) : <div className="h-full flex items-center justify-center text-center text-sm text-muted-foreground">No recorded glucose in this time window.</div>}
+          {readings.length === 0 && <div className="absolute inset-x-10 top-10 bottom-12 flex items-center justify-center">
+            <div className="bg-background border border-border rounded-md p-4 text-center max-w-sm">
+              <p className="font-heading text-sm">{latest ? "No readings in this time window" : "No glucose readings yet"}</p>
+              {latest && <Button variant="secondary" size="sm" className="mt-3" onClick={() => onTimeRangeChange("All")}>View all recorded readings</Button>}
+              {!latest && onLogReading && <Button size="sm" className="mt-3" onClick={onLogReading}><Plus className="h-4 w-4 mr-1" />Log glucose</Button>}
+            </div>
+          </div>}
       </div>
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-primary" />Recorded</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-accent" />Experimental forecast</span>
+        {forecast.points.length > 0 && <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-accent" />Experimental forecast</span>}
         <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-destructive" />Hypo threshold (70 mg/dL)</span>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground" role="status">{forecast.reason}</p>
+      {latest && onLogReading && <Button variant="outline" size="sm" className="mt-3" onClick={onLogReading}><Plus className="h-4 w-4 mr-1" />Log glucose</Button>}
 
       <Dialog open={infoOpen} onOpenChange={setInfoOpen}>
         <DialogContent className="max-w-2xl max-h-[85svh] overflow-y-auto w-[calc(100%-2rem)] bg-background">
