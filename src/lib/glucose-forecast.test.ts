@@ -16,6 +16,7 @@ describe("Evidence-based glucose forecasting", () => {
   });
   it("uses deterministic trained predictions, not random values", () => {
     expect(predictHistory(history)).toEqual(predictHistory(history));
+    expect(predictHistory(history)).toEqual([116.9, 119.2, 121.5, 123.8]);
     const output = predictHistory(history);
     expect(output).toHaveLength(4);
     expect(output?.[0]).toBeGreaterThan(40);
@@ -26,6 +27,7 @@ describe("Evidence-based glucose forecasting", () => {
   });
   it("rejects out-of-range inputs instead of clamping them", () => {
     expect(predictHistory([105,108,110,112,401])).toBeNull();
+    expect(forecastFromLogs(logs.map((log,i)=>i===4?{...log,glucoseReading:401}:log),now).points).toHaveLength(0);
   });
   it("keeps training, validation and testing file identifiers separate", () => {
     const all = [...forecastMetadata.trainParticipants, ...forecastMetadata.validationParticipants, ...forecastMetadata.testParticipants];
