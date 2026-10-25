@@ -109,7 +109,7 @@ useEffect(() => {
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Zone 3 — Prediction Graph */}
-          <GlucosePredictionChart logs={getLogs()} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+          <GlucosePredictionChart logs={getLogs()} timeRange={timeRange} onTimeRangeChange={setTimeRange} onLogReading={() => setLogModalOpen(true)} />
 
           {/* Zone 4 — AI Insight Feed */}
           <div className="glass-card p-4">

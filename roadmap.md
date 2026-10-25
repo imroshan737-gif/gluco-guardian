@@ -9,3 +9,8 @@
 - [x] Replace random dashboard curves with recorded readings and eligible trained forecasts.
 - [x] Add a top-right information icon with calculation, model, data, steps, and evaluation details.
 - [x] Test forecasting rules and verify the signed-in graph and information dialog.
+
+# Graph visibility
+- [x] Render chart axes, clearer recorded points, and glucose statistics without invented readings.
+- [x] Provide direct logging and access to older recorded history.
+- [ ] Verify empty, logged, older-history, and trained-forecast states.
