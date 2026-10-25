@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from "chart.js";
 import Navbar from "@/components/Navbar";
 import StatusBar from "@/components/StatusBar";
 import RiskGauge from "@/components/RiskGauge";
 import GlassTiltCard from "@/components/GlassTiltCard";
 import QuickLogModal from "@/components/QuickLogModal";
-import { Pill, Utensils } from "lucide-react";
+import { Pill, Utensils, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GlucosePredictionChart from "@/components/GlucosePredictionChart";
 import { useRef } from "react";
@@ -16,7 +14,6 @@ import {
   getInsulinStatus, getTimeSince, getLogs
 } from "@/lib/glucosense";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -130,22 +127,22 @@ useEffect(() => {
         </div>
       </main>
 {/* ── Floating Medication Icon ─────────────────────────────────────── */}
-<button
+<Button
   onClick={() => setShowMedPanel(true)}
-  className="fixed right-5 bottom-24 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
-  style={{ background: 'rgba(0,245,212,0.15)', border: '1px solid rgba(0,245,212,0.4)' }}
+  variant="secondary"
+  size="icon"
+  className="fixed right-5 bottom-24 z-40 w-14 h-14 rounded-lg shadow-lg border border-border"
   title="My Medications"
 >
   <Pill className="text-primary" size={24} />
   {(session?.medications?.length ?? 0) > 0 && (
     <span
-      className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-heading flex items-center justify-center"
-      style={{ background: '#00f5d4', color: '#000' }}
+      className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-heading flex items-center justify-center bg-primary text-primary-foreground"
     >
       {session.medications.length}
     </span>
   )}
-</button>
+</Button>
 
 {/* ── Medication Side Panel ─────────────────────────────────────────── */}
 {showMedPanel && (
@@ -160,10 +157,13 @@ useEffect(() => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-heading text-lg font-bold">My Medications </h3>
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Close medications"
           onClick={() => setShowMedPanel(false)}
           className="text-foreground/40 hover:text-foreground transition-colors text-xl"
-        ></button>
+        ><X /></Button>
       </div>
 
       {/* Meal Times Summary */}
