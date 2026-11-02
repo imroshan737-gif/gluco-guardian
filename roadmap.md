@@ -13,4 +13,4 @@
 # Graph visibility
 - [x] Render chart axes, clearer recorded points, and glucose statistics without invented readings.
 - [x] Provide direct logging and access to older recorded history.
-- [ ] Verify empty, logged, older-history, and trained-forecast states.
+- [x] Verify empty, logged, older-history, and trained-forecast states.
