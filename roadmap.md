@@ -14,3 +14,9 @@
 - [x] Render chart axes, clearer recorded points, and glucose statistics without invented readings.
 - [x] Provide direct logging and access to older recorded history.
 - [x] Verify empty, logged, older-history, and trained-forecast states.
+
+# Evidence-focused health assistant
+- [x] Connect real conversational AI through Cloud.
+- [x] Retrieve trustworthy medical references with citations and health-only safety rules.
+- [x] Replace canned answers with conversation, loading, failure, and retry states.
+- [x] Verify different health questions, follow-ups, and varied off-topic refusals.
