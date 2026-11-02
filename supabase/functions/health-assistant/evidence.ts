@@ -5,7 +5,7 @@ export const bodySchemaOptions = { maxMessages: 16, maxContent: 2000 };
 export function trustedUrl(url: string): boolean {
   try { const parsed = new URL(url); return parsed.protocol === "https:" && parsed.hostname === "medlineplus.gov"; } catch { return false; }
 }
-export async function retrieveEvidence(query: string): Promise<Source[]> {
+export async function retrieveEvidence(query: string, broaden = true): Promise<Source[]> {
   const url = new URL("https://wsearch.nlm.nih.gov/ws/query");
   url.search = new URLSearchParams({ db: "healthTopics", term: query, retmax: "3", rettype: "brief" }).toString();
   const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
@@ -25,6 +25,11 @@ export async function retrieveEvidence(query: string): Promise<Source[]> {
     };
     const summary = get("FullSummary");
     if (summary) sources.push({ id: sources.length + 1, url: row.url, title: get("title"), summary: summary.slice(0, 10_000) });
+  }
+  if (!sources.length && broaden && query.trim().includes(" ")) {
+    const terms = query.match(/[a-zA-Z][a-zA-Z-]+/g) ?? [];
+    const expanded = terms.slice(0, 4).map(term => `"${term}"`).join(" OR ");
+    if (expanded) return retrieveEvidence(expanded, false);
   }
   return sources;
 }
