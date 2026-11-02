@@ -1,418 +1,66 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Loader2 } from "lucide-react";
+import { Dna, X, Send, Loader2, RotateCcw, Trash2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
-// DNA Helix Icon
-function DNAIcon({ size = 24, className = "" }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 15c6.667-6 13.333 0 20-6" />
-      <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993" />
-      <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993" />
-      <path d="M2 9c6.667 6 13.333 0 20 6" />
-      <path d="M6.5 12.5l1 1" />
-      <path d="M16.5 10.5l1 1" />
-      <path d="M11.5 11l1 1" />
-    </svg>
-  );
-}
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
-const MEDICAL_SYSTEM_PROMPT = `You are GlucoGuardian AI, a highly knowledgeable medical and biological sciences assistant specialized in:
-- Diabetes (Type 1, Type 2, gestational, pre-diabetes)
-- Blood glucose management and hypoglycemia/hyperglycemia
-- Blood pressure, heart health, cardiovascular diseases
-- Human biology, anatomy, and physiology
-- Nutrition, metabolism, and diet for health conditions
-- Medications, insulin therapy, and drug interactions
-- Exercise physiology and its effects on blood sugar
-- Mental health impacts on physical health
-- General medical conditions, symptoms, and treatments
-
-RULES:
-- Answer ALL medical/biological questions with clear scientific reasoning
-- Use simple language but include scientific explanations
-- Always mention "consult your doctor" for specific medical advice
-- Be empathetic, supportive, and thorough
-- Use bullet points and structure for readability
-- If a question is NOT related to medical/biological topics, politely redirect to medical topics
-- Keep responses concise but comprehensive`;
-
+interface Source { id: number; title: string; url: string }
+interface Message { role: "user" | "assistant"; content: string; sources?: Source[]; evidenceStatus?: string }
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState("");
+  const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
-
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return;
-    const userMsg: Message = { role: "user", content: input.trim() };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    setInput("");
-    setLoading(true);
-
+  useEffect(() => { endRef.current?.scrollIntoView({ block: "nearest" }); }, [messages, loading]);
+  useEffect(() => { if (open) inputRef.current?.focus(); }, [open]);
+  const request = async (history: Message[]) => {
+    setLoading(true); setError("");
     try {
-      // Use a simple client-side response since no backend is set up
-      const response = await generateResponse(userMsg.content, newMessages);
-      setMessages(prev => [...prev, { role: "assistant", content: response }]);
-    } catch {
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I encountered an error. Please try again." }]);
-    } finally {
-      setLoading(false);
-    }
+      const { data, error: failure } = await supabase.functions.invoke("health-assistant", { body: { messages: history.slice(-16).map(({ role, content }) => ({ role, content: content.slice(0, 2000) })) } });
+      if (failure) {
+        let detail = "The assistant is unavailable. Please try again later.";
+        if ("context" in failure && failure.context instanceof Response) {
+          const body = await failure.context.json().catch(() => null);
+          if (typeof body?.error === "string") detail = body.error;
+        }
+        throw new Error(detail);
+      }
+      if (typeof data?.answer !== "string") throw new Error("No answer was received. Please try again.");
+      setMessages(previous => [...previous, { role: "assistant", content: data.answer, sources: data.sources, evidenceStatus: data.evidenceStatus }]);
+    } catch (failure) { setError(failure instanceof Error ? failure.message : "The assistant is unavailable."); }
+    finally { setLoading(false); }
   };
-
-  return (
-    <>
-      {/* Floating DNA Button */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed right-5 bottom-5 z-50 w-12 h-12 rounded-lg flex items-center justify-center transition-all hover:-translate-y-0.5 group"
-          style={{
-            background: "hsl(var(--primary))",
-            border: "1px solid hsl(var(--primary))",
-            boxShadow: "0 8px 20px hsl(var(--primary) / 0.2)",
-          }}
-          title="AI Medical Assistant"
-        >
-          <DNAIcon size={22} className="text-primary-foreground" />
-        </button>
-      )}
-
-      {/* Chat Panel */}
-      {open && (
-        <div
-          className="fixed right-5 bottom-5 z-50 flex flex-col"
-          style={{
-            width: "380px",
-            height: "520px",
-            background: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
-            borderRadius: "8px",
-            boxShadow: "0 20px 50px hsl(var(--foreground) / 0.16)",
-          }}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid hsl(var(--border))" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center bg-primary/10 border border-primary/20">
-                <DNAIcon size={20} className="text-primary" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xs font-bold text-foreground">GlucoGuardian AI</h3>
-                <p className="text-[10px] text-primary font-body">Medical Assistant</p>
-              </div>
-            </div>
-            <button onClick={() => setOpen(false)} className="text-foreground/40 hover:text-foreground transition-colors">
-              <X size={18} />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-            {messages.length === 0 && (
-              <div className="text-center py-8">
-                <DNAIcon size={40} className="text-primary/30 mx-auto mb-3" />
-                <p className="text-foreground/40 text-xs font-body mb-2">Ask me anything about health!</p>
-                <div className="space-y-1.5">
-                  {["What causes low blood sugar?", "How does insulin work?", "Tips for managing Type 2 diabetes"].map(q => (
-                    <button
-                      key={q}
-                      onClick={() => { setInput(q); }}
-                      className="block w-full text-left text-[11px] font-body px-3 py-2 rounded-lg transition-colors text-foreground/50 hover:text-primary hover:bg-primary/5"
-                      style={{ border: "1px solid rgba(0,245,212,0.1)" }}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className="max-w-[85%] px-3.5 py-2.5 rounded-2xl text-xs font-body leading-relaxed"
-                  style={
-                    msg.role === "user"
-                      ? { background: "hsl(var(--primary) / 0.1)", border: "1px solid hsl(var(--primary) / 0.18)", color: "hsl(var(--foreground))" }
-                      : { background: "hsl(var(--secondary))", border: "1px solid hsl(var(--border))", color: "hsl(var(--foreground))" }
-                  }
-                >
-                  <div className="whitespace-pre-wrap">{msg.content}</div>
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="px-4 py-3 rounded-2xl" style={{ background: "rgba(169,127,240,0.1)", border: "1px solid rgba(169,127,240,0.15)" }}>
-                  <Loader2 size={16} className="text-primary animate-spin" />
-                </div>
-              </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Input */}
-          <div className="px-4 py-3" style={{ borderTop: "1px solid hsl(var(--border))" }}>
-            <div className="flex gap-2">
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && sendMessage()}
-                placeholder="Ask about health, glucose, BP..."
-                className="flex-1 bg-muted/30 border border-primary/20 rounded-xl px-3 py-2.5 text-xs font-body text-foreground focus:outline-none focus:border-primary/50 placeholder:text-foreground/30"
-              />
-              <button
-                onClick={sendMessage}
-                disabled={loading || !input.trim()}
-                className="w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:scale-105 disabled:opacity-40"
-                style={{ background: "rgba(0,245,212,0.2)", border: "1px solid rgba(0,245,212,0.3)" }}
-              >
-                <Send size={14} className="text-primary" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-// Client-side medical knowledge response generator
-async function generateResponse(question: string, _history: Message[]): Promise<string> {
-  const q = question.toLowerCase();
-  
-  // Simulate slight delay for realism
-  await new Promise(r => setTimeout(r, 800 + Math.random() * 700));
-
-  if (q.includes("blood sugar") || q.includes("glucose") || q.includes("low blood sugar") || q.includes("hypogly")) {
-    return `**Low Blood Sugar (Hypoglycemia)**
-
-Blood glucose below 70 mg/dL is considered hypoglycemia. Here's what happens:
-
-• **Cause**: Too much insulin, skipped meals, excessive exercise, or alcohol consumption
-• **Symptoms**: Shakiness, sweating, confusion, rapid heartbeat, dizziness
-• **Immediate Action**: Follow the "15-15 Rule" — eat 15g of fast-acting carbs (glucose tablets, juice), wait 15 minutes, recheck
-
-**Scientific Reason**: Your brain depends on glucose as its primary fuel. When levels drop, your body releases counter-regulatory hormones (glucagon, epinephrine) causing those symptoms as an alarm system.
-
- Always consult your healthcare provider for personalized guidance.`;
-  }
-
-  if (q.includes("insulin") && (q.includes("work") || q.includes("how"))) {
-    return `**How Insulin Works**
-
-Insulin is a peptide hormone produced by beta cells in the pancreas (Islets of Langerhans).
-
-• **Function**: Acts as a "key" that unlocks cells to absorb glucose from the bloodstream
-• **Process**: After eating → blood sugar rises → pancreas releases insulin → cells absorb glucose → blood sugar normalizes
-• **Type 1**: Immune system destroys beta cells → no insulin production
-• **Type 2**: Cells become resistant to insulin → glucose can't enter efficiently
-
-**Key Facts**:
-- Insulin has a half-life of ~5-6 minutes in blood
-- Rapid-acting insulin peaks in 1-2 hours
-- Long-acting insulin provides baseline coverage for 24 hours
-
- Insulin dosing should always be managed with your endocrinologist.`;
-  }
-
-  if (q.includes("type 2") || q.includes("type 1") || q.includes("diabetes")) {
-    return `**Understanding Diabetes**
-
-Diabetes is a metabolic disorder affecting how your body processes glucose:
-
-**Type 1 Diabetes**:
-• Autoimmune condition — immune system attacks insulin-producing beta cells
-• Usually diagnosed in childhood/young adulthood
-• Requires lifelong insulin therapy
-• ~5-10% of all diabetes cases
-
-**Type 2 Diabetes**:
-• Body becomes resistant to insulin or doesn't produce enough
-• Strongly linked to lifestyle factors (obesity, inactivity, diet)
-• Can often be managed with diet, exercise, and oral medications
-• ~90-95% of all diabetes cases
-
-**Management Tips**:
-• Monitor blood glucose regularly
-• Maintain a balanced diet (low glycemic index foods)
-• Exercise 150+ minutes/week
-• Take medications as prescribed
-• Manage stress levels
-
- Regular check-ups with your healthcare team are essential.`;
-  }
-
-  if (q.includes("blood pressure") || q.includes("bp") || q.includes("hypertension")) {
-    return `**Blood Pressure Explained**
-
-Blood pressure measures the force of blood against artery walls, expressed as systolic/diastolic (e.g., 120/80 mmHg).
-
-**Categories**:
-• Normal: <120/80 mmHg
-• Elevated: 120-129/<80 mmHg
-• Stage 1 Hypertension: 130-139/80-89 mmHg
-• Stage 2 Hypertension: ≥140/≥90 mmHg
-
-**Why It Matters for Diabetics**:
-• Diabetes + high BP doubles cardiovascular risk
-• High BP damages blood vessels already stressed by high glucose
-• Target for diabetics is typically <130/80 mmHg
-
-**Natural Management**:
-• Reduce sodium intake (<2,300 mg/day)
-• DASH diet (fruits, vegetables, whole grains)
-• Regular aerobic exercise
-• Maintain healthy weight
-• Limit alcohol and quit smoking
-
- Consult your doctor for blood pressure medication decisions.`;
-  }
-
-  if (q.includes("heart") || q.includes("cardiovascular") || q.includes("cardiac")) {
-    return `**Heart Health & Diabetes**
-
-People with diabetes are 2-4x more likely to develop cardiovascular disease.
-
-**Why**: High blood sugar damages blood vessels and nerves that control the heart over time. This leads to:
-• Atherosclerosis (plaque buildup in arteries)
-• Coronary artery disease
-• Increased risk of heart attack and stroke
-
-**Key Markers to Monitor**:
-• HbA1c (target: <7% for most)
-• LDL cholesterol (<100 mg/dL)
-• Blood pressure (<130/80 mmHg)
-• Triglycerides (<150 mg/dL)
-
-**Heart-Protective Steps**:
-• Control blood glucose levels
-• Exercise regularly (strengthens the heart muscle)
-• Eat heart-healthy fats (omega-3, olive oil)
-• Avoid trans fats and excessive saturated fats
-• Don't smoke
-
- Get regular cardiac screenings as recommended by your doctor.`;
-  }
-
-  if (q.includes("food") || q.includes("diet") || q.includes("eat") || q.includes("nutrition") || q.includes("meal")) {
-    return `**Nutrition for Blood Sugar Control**
-
-What you eat directly impacts your glucose levels:
-
-**Best Foods**:
-• Non-starchy vegetables (broccoli, spinach, peppers)
-• Lean proteins (chicken, fish, tofu, lentils)
-• Whole grains (oats, quinoa, brown rice)
-• Healthy fats (avocado, nuts, olive oil)
-• Low-glycemic fruits (berries, apples, pears)
-
-**Foods to Limit**:
-• Refined carbs (white bread, white rice)
-• Sugary beverages and juices
-• Processed snacks and fried foods
-• High-sugar desserts
-
-**Meal Timing Tips**:
-• Eat at consistent times daily
-• Don't skip meals (especially if on insulin)
-• Balance carbs with protein and fat
-• The "plate method": ½ vegetables, ¼ protein, ¼ whole grains
-
- Consider working with a registered dietitian for personalized meal planning.`;
-  }
-
-  if (q.includes("exercise") || q.includes("workout") || q.includes("physical")) {
-    return `**Exercise & Blood Sugar**
-
-Physical activity is one of the most powerful tools for glucose management:
-
-**How Exercise Helps**:
-• Muscles absorb glucose without needing insulin during exercise
-• Improves insulin sensitivity for 24-72 hours after
-• Lowers HbA1c by 0.5-0.7% on average
-• Reduces cardiovascular risk
-
-**Recommended**:
-• 150 minutes/week of moderate aerobic activity
-• 2-3 sessions of resistance training
-• Flexibility exercises (yoga, stretching)
-
-**Safety Tips**:
-• Check glucose before exercise
-• If <100 mg/dL → eat 15g carbs first
-• Carry fast-acting glucose during workouts
-• Stay hydrated
-• Avoid exercise if glucose >250 mg/dL with ketones
-
- Always discuss new exercise programs with your healthcare provider.`;
-  }
-
-  if (q.includes("stress") || q.includes("anxiety") || q.includes("mental")) {
-    return `**Stress & Blood Sugar Connection**
-
-Stress directly impacts glucose levels through hormonal pathways:
-
-**The Science**:
-• Stress triggers cortisol and adrenaline release
-• These hormones signal the liver to release stored glucose
-• Result: Blood sugar rises even without eating
-• Chronic stress keeps levels persistently elevated
-
-**Impact on Diabetes**:
-• Makes blood sugar harder to predict
-• Can lead to emotional eating
-• Disrupts sleep (which further impacts glucose)
-• Reduces motivation for self-care
-
-**Stress Management**:
-• Deep breathing exercises (4-7-8 technique)
-• Regular physical activity
-• Adequate sleep (7-9 hours)
-• Mindfulness meditation
-• Social support and community
-• Professional counseling when needed
-
- Mental health is as important as physical health in diabetes management.`;
-  }
-
-  // Default response for other medical questions
-  return `That's a great question! Here's what I can share:
-
-Based on medical science, your question touches on important health concepts. While I have extensive knowledge of medical and biological topics, I want to make sure I give you the most accurate information.
-
-**Key Points**:
-• The human body is an interconnected system — changes in one area affect others
-• Evidence-based approaches are always recommended
-• Individual responses vary based on genetics, lifestyle, and existing conditions
-
-**What I Can Help With**:
-• Diabetes management (Type 1, Type 2, pre-diabetes)
-• Blood glucose monitoring and optimization
-• Blood pressure and cardiovascular health
-• Nutrition and diet planning
-• Exercise and physical activity guidance
-• Medication understanding
-• Stress and mental health impacts
-
-Feel free to ask me anything specific about these topics!
-
- For personalized medical advice, always consult your healthcare provider.`;
+  const send = () => {
+    if (!input.trim() || loading) return;
+    const history = [...messages, { role: "user" as const, content: input.trim() }];
+    setMessages(history); setInput(""); void request(history);
+  };
+  return <>
+    {!open && <Button size="icon" className="fixed right-5 bottom-5 z-50 h-12 w-12 rounded-lg shadow-lg" aria-label="AI Medical Assistant" title="AI Medical Assistant" onClick={() => setOpen(true)}><Dna className="h-6 w-6" /></Button>}
+    {open && <section aria-label="Medical assistant conversation" className="fixed right-3 bottom-3 sm:right-5 sm:bottom-5 z-50 flex flex-col w-[calc(100vw-1.5rem)] sm:w-[420px] h-[min(620px,calc(100svh-1.5rem))] bg-card border border-border rounded-lg shadow-xl">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-secondary rounded-t-lg">
+        <div className="flex items-center gap-2"><Dna className="text-primary h-6 w-6" /><div><h3 className="font-heading text-sm">GlucoGuardian AI</h3><p className="text-xs text-muted-foreground">Health & biology</p></div></div>
+        <div className="flex"><Button variant="ghost" size="icon" disabled={loading} aria-label="Clear conversation" title="Clear conversation" onClick={() => { setMessages([]); setError(""); }}><Trash2 className="h-4 w-4" /></Button><Button variant="ghost" size="icon" aria-label="Close assistant" title="Close assistant" onClick={() => setOpen(false)}><X className="h-4 w-4" /></Button></div>
+      </header>
+      <p className="px-4 py-2 text-[11px] text-muted-foreground border-b border-border">Educational AI, not a diagnosis. Replies can be wrong. Avoid sharing identifying details.</p>
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-4" aria-live="polite">
+        {!messages.length && <div className="py-6"><Dna className="text-primary mx-auto h-10 w-10 mb-4" /><p className="font-heading text-sm text-center mb-4">What would you like to ask?</p>{["Why can glucose rise while fasting?", "How does insulin work?", "What is the difference between arteries and veins?"].map(q => <Button key={q} variant="outline" className="w-full h-auto whitespace-normal text-left justify-start text-xs mb-2 py-3" onClick={() => setInput(q)}>{q}</Button>)}</div>}
+        {messages.map((message, i) => <div key={i} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[95%] rounded-md px-3 py-3 text-sm leading-relaxed border ${message.role === "user" ? "bg-primary/10 border-primary/20" : "bg-secondary border-border"}`}>
+          <ReactMarkdown components={{ p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>, ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>, ol: ({ children }) => <ol className="list-decimal pl-4 mb-2">{children}</ol>, a: ({ children }) => <span>{children}</span> }}>{message.content}</ReactMarkdown>
+          {!!message.sources?.length && <div className="border-t border-border mt-3 pt-2"><p className="text-xs font-semibold mb-1">Sources: MedlinePlus / National Library of Medicine</p>{message.sources.filter(s => { try { const u = new URL(s.url); return u.protocol === "https:" && u.hostname === "medlineplus.gov"; } catch { return false; } }).map(source => <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="block text-xs text-primary underline mt-1">[{source.id}] {source.title}</a>)}<p className="text-[10px] text-muted-foreground mt-2">Informational summary; not endorsed by NLM.</p></div>}
+          {message.evidenceStatus && !["retrieved", "out_of_scope"].includes(message.evidenceStatus) && <p className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">No supporting live reference was retrieved for this reply.</p>}
+        </div></div>)}
+        {loading && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" />Reviewing your question…</div>}
+        {error && <div role="alert" className="text-sm text-destructive"><p>{error}</p><Button variant="outline" size="sm" className="mt-2" onClick={() => void request(messages)}><RotateCcw className="h-4 w-4 mr-2" />Retry</Button></div>}
+        <div ref={endRef} />
+      </div>
+      <form className="flex gap-2 px-4 py-3 border-t border-border" onSubmit={e => { e.preventDefault(); send(); }}>
+        <input ref={inputRef} aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a health or biology question…" className="min-w-0 flex-1 bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring" disabled={loading} />
+        <Button type="submit" size="icon" aria-label="Send question" title="Send question" disabled={loading || !input.trim()}><Send className="h-4 w-4" /></Button>
+      </form>
+    </section>}
+  </>;
 }
