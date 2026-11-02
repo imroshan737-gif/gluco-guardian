@@ -16,7 +16,7 @@
 - [x] Verify empty, logged, older-history, and trained-forecast states.
 
 # Evidence-focused health assistant
-- [ ] Connect real conversational AI through Cloud.
-- [ ] Retrieve trustworthy medical references with citations and health-only safety rules.
-- [ ] Replace canned answers with conversation, loading, failure, and retry states.
-- [ ] Verify different health questions, follow-ups, and varied off-topic refusals.
+- [x] Connect real conversational AI through Cloud.
+- [x] Retrieve trustworthy medical references with citations and health-only safety rules.
+- [x] Replace canned answers with conversation, loading, failure, and retry states.
+- [x] Verify different health questions, follow-ups, and varied off-topic refusals.
