@@ -1,25 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import { Dna, X, Send, Loader2, RotateCcw, Trash2 } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { Dna, X, Send, Loader2, RotateCcw, Trash2, ShieldCheck } from "lucide-react";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
+import { Message as ChatMessage, MessageContent, MessageResponse } from "@/components/ai-elements/message";
+import { PromptInput, PromptInputTextarea, PromptInputFooter, PromptInputSubmit } from "@/components/ai-elements/prompt-input";
+import { quickReply } from "@/lib/assistant-quick-replies";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Source { id: number; title: string; url: string }
-interface Message { role: "user" | "assistant"; content: string; sources?: Source[]; evidenceStatus?: string }
+interface Message { role: "user" | "assistant"; parts: { type: "text"; text: string }[]; sources?: Source[]; evidenceStatus?: string }
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => { endRef.current?.scrollIntoView({ block: "nearest" }); }, [messages, loading]);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { if (open && !loading) inputRef.current?.focus(); }, [open, loading, messages]);
   useEffect(() => { if (open) inputRef.current?.focus(); }, [open]);
   const request = async (history: Message[]) => {
     setLoading(true); setError("");
     try {
-      const { data, error: failure } = await supabase.functions.invoke("health-assistant", { body: { messages: history.slice(-16).map(({ role, content }) => ({ role, content: content.slice(0, 2000) })) } });
+      const { data, error: failure } = await supabase.functions.invoke("health-assistant", { body: { messages: history.map(({ role, parts }) => ({ role, content: parts.map(part => part.text).join("\n") })) } });
       if (failure) {
         let detail = "The assistant is unavailable. Please try again later.";
         if ("context" in failure && failure.context instanceof Response) {
@@ -29,38 +31,48 @@ export default function AIAssistant() {
         throw new Error(detail);
       }
       if (typeof data?.answer !== "string") throw new Error("No answer was received. Please try again.");
-      setMessages(previous => [...previous, { role: "assistant", content: data.answer, sources: data.sources, evidenceStatus: data.evidenceStatus }]);
+      setMessages(previous => [...previous, { role: "assistant", parts: [{ type: "text", text: data.answer }], sources: data.sources, evidenceStatus: data.evidenceStatus }]);
     } catch (failure) { setError(failure instanceof Error ? failure.message : "The assistant is unavailable."); }
     finally { setLoading(false); }
   };
-  const send = () => {
-    if (!input.trim() || loading) return;
-    const history = [...messages, { role: "user" as const, content: input.trim() }];
-    setMessages(history); setInput(""); void request(history);
+  const send = (text = input) => {
+    if (!text.trim() || loading) return;
+    const history: Message[] = [...messages, { role: "user", parts: [{ type: "text", text: text.trim() }] }];
+    setInput(""); setError("");
+    const instant = quickReply(text, messages.filter(m => m.role === "assistant").length);
+    if (instant) {
+      setMessages([...history, { role: "assistant", parts: [{ type: "text", text: instant }] }]);
+      inputRef.current?.focus(); return;
+    }
+    setMessages(history); void request(history);
   };
   return <>
     {!open && <Button size="icon" className="fixed right-5 bottom-5 z-50 h-12 w-12 rounded-lg shadow-lg" aria-label="AI Medical Assistant" title="AI Medical Assistant" onClick={() => setOpen(true)}><Dna className="h-6 w-6" /></Button>}
-    {open && <section aria-label="Medical assistant conversation" className="fixed right-3 bottom-3 sm:right-5 sm:bottom-5 z-50 flex flex-col w-[calc(100vw-1.5rem)] sm:w-[420px] h-[min(620px,calc(100svh-1.5rem))] bg-card border border-border rounded-lg shadow-xl">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-secondary rounded-t-lg">
-        <div className="flex items-center gap-2"><Dna className="text-primary h-6 w-6" /><div><h3 className="font-heading text-sm">GlucoGuardian AI</h3><p className="text-xs text-muted-foreground">Health & biology</p></div></div>
+    {open && <section aria-label="Medical assistant conversation" className="fixed right-3 bottom-3 sm:right-5 sm:bottom-5 z-50 flex flex-col w-[calc(100vw-1.5rem)] sm:w-[420px] h-[min(620px,calc(100svh-1.5rem))] health-chat rounded-lg">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-border health-chat-header rounded-t-lg">
+        <div className="flex items-center gap-2"><Dna className="text-primary h-6 w-6" /><div><h3 className="font-heading text-sm">GlucoGuardian AI</h3><p className="text-xs opacity-90">Health & biology</p></div></div>
         <div className="flex"><Button variant="ghost" size="icon" disabled={loading} aria-label="Clear conversation" title="Clear conversation" onClick={() => { setMessages([]); setError(""); }}><Trash2 className="h-4 w-4" /></Button><Button variant="ghost" size="icon" aria-label="Close assistant" title="Close assistant" onClick={() => setOpen(false)}><X className="h-4 w-4" /></Button></div>
       </header>
-      <p className="px-4 py-2 text-[11px] text-muted-foreground border-b border-border">Educational AI, not a diagnosis. Replies can be wrong. Avoid sharing identifying details.</p>
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-4" aria-live="polite">
+      <p className="px-4 py-2 text-[11px] text-muted-foreground border-b border-border bg-surface-green flex items-start gap-2"><ShieldCheck className="h-4 w-4 text-accent shrink-0" />Educational AI, not a diagnosis. Replies can be wrong. Avoid sharing identifying details.</p>
+      <Conversation className="min-h-0" aria-live="polite"><ConversationContent className="gap-5">
         {!messages.length && <div className="py-6"><Dna className="text-primary mx-auto h-10 w-10 mb-4" /><p className="font-heading text-sm text-center mb-4">What would you like to ask?</p>{["Why can glucose rise while fasting?", "How does insulin work?", "What is the difference between arteries and veins?"].map(q => <Button key={q} variant="outline" className="w-full h-auto whitespace-normal text-left justify-start text-xs mb-2 py-3" onClick={() => setInput(q)}>{q}</Button>)}</div>}
-        {messages.map((message, i) => <div key={i} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}><div className={`max-w-[95%] rounded-md px-3 py-3 text-sm leading-relaxed border ${message.role === "user" ? "bg-primary/10 border-primary/20" : "bg-secondary border-border"}`}>
-          <ReactMarkdown components={{ p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>, ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>, ol: ({ children }) => <ol className="list-decimal pl-4 mb-2">{children}</ol>, a: ({ children }) => <span>{children}</span> }}>{message.content}</ReactMarkdown>
+        {messages.map((message, i) => <ChatMessage key={i} from={message.role}>
+          <MessageContent className={message.role === "user" ? "health-chat-user" : "w-full leading-relaxed"}>
+            {message.parts.map((part, index) => <MessageResponse key={index} components={{ a: ({ children }) => <span>{children}</span> }}>{part.text}</MessageResponse>)}
           {!!message.sources?.length && <div className="border-t border-border mt-3 pt-2"><p className="text-xs font-semibold mb-1">Sources: MedlinePlus / National Library of Medicine</p>{message.sources.filter(s => { try { const u = new URL(s.url); return u.protocol === "https:" && u.hostname === "medlineplus.gov"; } catch { return false; } }).map(source => <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="block text-xs text-primary underline mt-1">[{source.id}] {source.title}</a>)}<p className="text-[10px] text-muted-foreground mt-2">Informational summary; not endorsed by NLM.</p></div>}
           {message.evidenceStatus && !["retrieved", "out_of_scope"].includes(message.evidenceStatus) && <p className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">No supporting live reference was retrieved for this reply.</p>}
-        </div></div>)}
+        </MessageContent></ChatMessage>)}
         {loading && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" />Reviewing your question…</div>}
         {error && <div role="alert" className="text-sm text-destructive"><p>{error}</p><Button variant="outline" size="sm" className="mt-2" onClick={() => void request(messages)}><RotateCcw className="h-4 w-4 mr-2" />Retry</Button></div>}
-        <div ref={endRef} />
+      </ConversationContent><ConversationScrollButton aria-label="Latest messages" title="Latest messages" /></Conversation>
+      <div className="px-3 py-3 border-t border-border bg-secondary rounded-b-lg">
+        <PromptInput onSubmit={({ text }) => send(text)} className="[&_[data-slot=input-group]]:bg-background [&_[data-slot=input-group]]:border-primary">
+          <PromptInputTextarea ref={inputRef} aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-12 text-sm" />
+          <PromptInputFooter className="justify-end">
+            <PromptInputSubmit status={loading ? "submitted" : "ready"} aria-label="Send question" title="Send question" disabled={loading || !input.trim()} className="h-9 w-9 shrink-0"><Send className="h-4 w-4" /></PromptInputSubmit>
+          </PromptInputFooter>
+        </PromptInput>
       </div>
-      <form className="flex gap-2 px-4 py-3 border-t border-border" onSubmit={e => { e.preventDefault(); send(); }}>
-        <input ref={inputRef} aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a health or biology question…" className="min-w-0 flex-1 bg-muted border border-border rounded-md px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring" disabled={loading} />
-        <Button type="submit" size="icon" aria-label="Send question" title="Send question" disabled={loading || !input.trim()}><Send className="h-4 w-4" /></Button>
-      </form>
     </section>}
   </>;
 }
