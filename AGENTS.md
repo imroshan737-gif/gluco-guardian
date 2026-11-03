@@ -3,3 +3,4 @@ Keep shared surface roles in global CSS and load external fonts through document
 Keep the trained glucose artifact and deterministic inference in the forecast module, with the reproducible offline training script and model card; this makes dataset provenance and evaluation auditable without shipping raw participant records.
 The dashboard chart must render recorded observations separately from eligible 15–60 minute forecasts; missing or stale history must suppress forecasts so simulated data cannot masquerade as measurements.
 Keep health-assistant prompts, evidence retrieval, and AI Gateway calls inside its Cloud function; the browser sends only conversation text and renders verified source links, because keys and medical grounding must not live in client code.
+Use AI Elements for the assistant transcript, markdown, and composer; only full-string courtesy/arithmetic matches may bypass Cloud, so medical content never becomes a canned quick reply.
