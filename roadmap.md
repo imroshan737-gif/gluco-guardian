@@ -20,3 +20,9 @@
 - [x] Retrieve trustworthy medical references with citations and health-only safety rules.
 - [x] Replace canned answers with conversation, loading, failure, and retry states.
 - [x] Verify different health questions, follow-ups, and varied off-topic refusals.
+
+# Assistant clarity and quick replies
+- [ ] Strengthen chat contrast and composer visibility.
+- [ ] Answer standalone greetings and arithmetic instantly; keep health answers evidence-based.
+- [ ] Remove formulaic medical invitations from unrelated-topic replies.
+- [ ] Verify quick replies, health answers, and mobile readability.
