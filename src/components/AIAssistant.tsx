@@ -15,9 +15,9 @@ export default function AIAssistant() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => { if (open && !loading) inputRef.current?.focus(); }, [open, loading, messages]);
-  useEffect(() => { if (open) inputRef.current?.focus(); }, [open]);
+  const panelRef = useRef<HTMLElement>(null);
+  useEffect(() => { if (open && !loading) panelRef.current?.querySelector("textarea")?.focus(); }, [open, loading, messages]);
+  useEffect(() => { if (open) panelRef.current?.querySelector("textarea")?.focus(); }, [open]);
   const request = async (history: Message[]) => {
     setLoading(true); setError("");
     try {
@@ -42,15 +42,15 @@ export default function AIAssistant() {
     const instant = quickReply(text, messages.filter(m => m.role === "assistant").length);
     if (instant) {
       setMessages([...history, { role: "assistant", parts: [{ type: "text", text: instant }] }]);
-      inputRef.current?.focus(); return;
+      panelRef.current?.querySelector("textarea")?.focus(); return;
     }
     setMessages(history); void request(history);
   };
   return <>
     {!open && <Button size="icon" className="fixed right-5 bottom-5 z-50 h-12 w-12 rounded-lg shadow-lg" aria-label="AI Medical Assistant" title="AI Medical Assistant" onClick={() => setOpen(true)}><Dna className="h-6 w-6" /></Button>}
-    {open && <section aria-label="Medical assistant conversation" className="fixed right-3 bottom-3 sm:right-5 sm:bottom-5 z-50 flex flex-col w-[calc(100vw-1.5rem)] sm:w-[420px] h-[min(620px,calc(100svh-1.5rem))] health-chat rounded-lg">
+    {open && <section ref={panelRef} aria-label="Medical assistant conversation" className="fixed right-3 bottom-3 sm:right-5 sm:bottom-5 z-50 flex flex-col w-[calc(100vw-1.5rem)] sm:w-[420px] h-[min(620px,calc(100svh-1.5rem))] health-chat rounded-lg">
       <header className="flex items-center justify-between px-4 py-3 border-b border-border health-chat-header rounded-t-lg">
-        <div className="flex items-center gap-2"><Dna className="text-primary h-6 w-6" /><div><h3 className="font-heading text-sm">GlucoGuardian AI</h3><p className="text-xs opacity-90">Health & biology</p></div></div>
+        <div className="flex items-center gap-2"><Dna className="h-6 w-6" /><div><h3 className="font-heading text-sm">GlucoGuardian AI</h3><p className="text-xs opacity-90">Health & biology</p></div></div>
         <div className="flex"><Button variant="ghost" size="icon" disabled={loading} aria-label="Clear conversation" title="Clear conversation" onClick={() => { setMessages([]); setError(""); }}><Trash2 className="h-4 w-4" /></Button><Button variant="ghost" size="icon" aria-label="Close assistant" title="Close assistant" onClick={() => setOpen(false)}><X className="h-4 w-4" /></Button></div>
       </header>
       <p className="px-4 py-2 text-[11px] text-muted-foreground border-b border-border bg-surface-green flex items-start gap-2"><ShieldCheck className="h-4 w-4 text-accent shrink-0" />Educational AI, not a diagnosis. Replies can be wrong. Avoid sharing identifying details.</p>
@@ -67,7 +67,7 @@ export default function AIAssistant() {
       </ConversationContent><ConversationScrollButton aria-label="Latest messages" title="Latest messages" /></Conversation>
       <div className="px-3 py-3 border-t border-border bg-secondary rounded-b-lg">
         <PromptInput onSubmit={({ text }) => send(text)} className="[&_[data-slot=input-group]]:bg-background [&_[data-slot=input-group]]:border-primary">
-          <PromptInputTextarea ref={inputRef} aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-12 text-sm" />
+          <PromptInputTextarea aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-12 text-sm" />
           <PromptInputFooter className="justify-end">
             <PromptInputSubmit status={loading ? "submitted" : "ready"} aria-label="Send question" title="Send question" disabled={loading || !input.trim()} className="h-9 w-9 shrink-0"><Send className="h-4 w-4" /></PromptInputSubmit>
           </PromptInputFooter>
