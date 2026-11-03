@@ -22,7 +22,7 @@
 - [x] Verify different health questions, follow-ups, and varied off-topic refusals.
 
 # Assistant clarity and quick replies
-- [ ] Strengthen chat contrast and composer visibility.
-- [ ] Answer standalone greetings and arithmetic instantly; keep health answers evidence-based.
-- [ ] Remove formulaic medical invitations from unrelated-topic replies.
-- [ ] Verify quick replies, health answers, and mobile readability.
+- [x] Strengthen chat contrast and composer visibility.
+- [x] Answer standalone greetings and arithmetic instantly; keep health answers evidence-based.
+- [x] Remove formulaic medical invitations from unrelated-topic replies.
+- [x] Verify quick replies, health answers, and mobile readability.
