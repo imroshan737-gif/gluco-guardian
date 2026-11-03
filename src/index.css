@@ -85,7 +85,7 @@
   }
   .health-chat-header { background: hsl(var(--chat-header)); color: hsl(var(--chat-header-foreground)); }
   .health-chat-header button { color: inherit; }
-  .health-chat .health-chat-header h3 { color: hsl(var(--chat-header-foreground)); }
+  .health-chat .health-chat-header h3 { color: hsl(var(--chat-header-foreground)) !important; }
   .health-chat-user { background: hsl(var(--chat-user)) !important; color: hsl(var(--chat-user-foreground)) !important; }
   .health-chat-user [data-streamdown] { color: inherit; }
   .home-hero {
