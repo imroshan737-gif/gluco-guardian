@@ -8,7 +8,7 @@ export function trustedUrl(url: string): boolean {
 export async function retrieveEvidence(query: string, broaden = true): Promise<Source[]> {
   const url = new URL("https://wsearch.nlm.nih.gov/ws/query");
   url.search = new URLSearchParams({ db: "healthTopics", term: query, retmax: "3", rettype: "brief" }).toString();
-  const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+  const res = await fetch(url, { signal: AbortSignal.timeout(3_500) });
   if (!res.ok) throw new Error("Medical reference service unavailable");
   const xml = await res.text();
   const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "", processEntities: true });
@@ -32,4 +32,10 @@ export async function retrieveEvidence(query: string, broaden = true): Promise<S
     if (expanded) return retrieveEvidence(expanded, false);
   }
   return sources;
+}
+const STOP = new Set("a an and are as at be but by can do does for from had has have how i if in is it its me my of on or should so than that the their them then there these they this to was we what when where which who why will with would you your about after before could did get into just much more most also very please tell explain".split(" "));
+/** Local, model-free search terms from the latest message so lookup can run alongside nothing else. */
+export function searchTerms(text: string): string {
+  const words = (text.toLowerCase().match(/[a-z][a-z0-9-]{2,}/g) ?? []).filter(w => !STOP.has(w));
+  return [...new Set(words)].slice(0, 4).join(" ");
 }
