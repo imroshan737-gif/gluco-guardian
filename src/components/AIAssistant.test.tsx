@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import AIAssistant from "./AIAssistant";
 
 const { invoke } = vi.hoisted(() => ({ invoke: vi.fn() }));
-vi.mock("@/integrations/supabase/client", () => ({ supabase: { functions: { invoke } } }));
+vi.mock("@/lib/health-assistant-client", () => ({ streamHealthAnswer: invoke }));
 
 describe("real health assistant", () => {
   it("answers 1+1 and hi instantly without calling the AI service", async () => {
@@ -23,14 +23,14 @@ describe("real health assistant", () => {
     vi.stubGlobal("ResizeObserver", class { observe() {} unobserve() {} disconnect() {} });
     invoke.mockClear();
     Element.prototype.scrollIntoView = vi.fn();
-    invoke.mockResolvedValueOnce({ data: null, error: new Error("Unavailable") });
-    invoke.mockResolvedValueOnce({ data: { answer: "Insulin helps cells use glucose.", sources: [], evidenceStatus: "no_match" }, error: null });
+    invoke.mockRejectedValueOnce(new Error("Unavailable"));
+    invoke.mockImplementationOnce(async (_m: unknown, onDelta: (t: string) => void) => { onDelta("Insulin helps "); onDelta("cells use glucose."); return { sources: [], evidenceStatus: "no_match" }; });
     render(<AIAssistant />);
     fireEvent.click(screen.getByRole("button", { name: "AI Medical Assistant" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Health question" }), { target: { value: "How does insulin work?" } });
     fireEvent.click(screen.getByRole("button", { name: "Send question" }));
     await screen.findByRole("alert");
-    expect(invoke).toHaveBeenCalledWith("health-assistant", { body: { messages: [{ role: "user", content: "How does insulin work?" }] } });
+    expect(invoke.mock.calls[0][0]).toEqual([{ role: "user", content: "How does insulin work?" }]);
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     await screen.findByText("Insulin helps cells use glucose.");
     await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
