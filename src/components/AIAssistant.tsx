@@ -5,9 +5,9 @@ import { Message as ChatMessage, MessageContent, MessageResponse } from "@/compo
 import { PromptInput, PromptInputTextarea, PromptInputFooter, PromptInputSubmit } from "@/components/ai-elements/prompt-input";
 import { quickReply } from "@/lib/assistant-quick-replies";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { streamHealthAnswer, type AssistantSource } from "@/lib/health-assistant-client";
 
-interface Source { id: number; title: string; url: string }
+type Source = AssistantSource;
 interface Message { role: "user" | "assistant"; parts: { type: "text"; text: string }[]; sources?: Source[]; evidenceStatus?: string }
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
@@ -18,22 +18,19 @@ export default function AIAssistant() {
   const panelRef = useRef<HTMLElement>(null);
   useEffect(() => { if (open && !loading) panelRef.current?.querySelector("textarea")?.focus(); }, [open, loading, messages]);
   useEffect(() => { if (open) panelRef.current?.querySelector("textarea")?.focus(); }, [open]);
+  const [streaming, setStreaming] = useState(false);
   const request = async (history: Message[]) => {
-    setLoading(true); setError("");
+    setLoading(true); setStreaming(false); setError(""); setMessages(history);
+    let started = false;
     try {
-      const { data, error: failure } = await supabase.functions.invoke("health-assistant", { body: { messages: history.map(({ role, parts }) => ({ role, content: parts.map(part => part.text).join("\n") })) } });
-      if (failure) {
-        let detail = "The assistant is unavailable. Please try again later.";
-        if ("context" in failure && failure.context instanceof Response) {
-          const body = await failure.context.json().catch(() => null);
-          if (typeof body?.error === "string") detail = body.error;
-        }
-        throw new Error(detail);
-      }
-      if (typeof data?.answer !== "string") throw new Error("No answer was received. Please try again.");
-      setMessages(previous => [...previous, { role: "assistant", parts: [{ type: "text", text: data.answer }], sources: data.sources, evidenceStatus: data.evidenceStatus }]);
-    } catch (failure) { setError(failure instanceof Error ? failure.message : "The assistant is unavailable."); }
-    finally { setLoading(false); }
+      const result = await streamHealthAnswer(history.map(({ role, parts }) => ({ role, content: parts.map(part => part.text).join("\n") })), delta => {
+        if (!started) { started = true; setStreaming(true); setMessages([...history, { role: "assistant", parts: [{ type: "text", text: delta }] }]); return; }
+        setMessages(previous => { const last = previous[previous.length - 1]; return [...previous.slice(0, -1), { ...last, parts: [{ type: "text", text: last.parts[0].text + delta }] }]; });
+      });
+      if (!started) throw new Error("No answer was received. Please press Retry.");
+      setMessages(previous => { const last = previous[previous.length - 1]; return [...previous.slice(0, -1), { ...last, sources: result.sources, evidenceStatus: result.evidenceStatus }]; });
+    } catch (failure) { setMessages(history); setError(failure instanceof Error ? failure.message : "The assistant is unavailable."); }
+    finally { setLoading(false); setStreaming(false); }
   };
   const send = (text = input) => {
     if (!text.trim() || loading) return;
@@ -60,9 +57,9 @@ export default function AIAssistant() {
           <MessageContent className={message.role === "user" ? "health-chat-user" : "w-full leading-relaxed"}>
             {message.parts.map((part, index) => <MessageResponse key={index} components={{ a: ({ children }) => <span>{children}</span> }}>{part.text}</MessageResponse>)}
           {!!message.sources?.length && <div className="border-t border-border mt-3 pt-2"><p className="text-xs font-semibold mb-1">Sources: MedlinePlus / National Library of Medicine</p>{message.sources.filter(s => { try { const u = new URL(s.url); return u.protocol === "https:" && u.hostname === "medlineplus.gov"; } catch { return false; } }).map(source => <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="block text-xs text-primary underline mt-1">[{source.id}] {source.title}</a>)}<p className="text-[10px] text-muted-foreground mt-2">Informational summary; not endorsed by NLM.</p></div>}
-          {message.evidenceStatus && !["retrieved", "out_of_scope"].includes(message.evidenceStatus) && <p className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">No supporting live reference was retrieved for this reply.</p>}
+          {message.evidenceStatus === "unavailable" && <p className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">No supporting live reference was retrieved for this reply.</p>}
         </MessageContent></ChatMessage>)}
-        {loading && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" />Reviewing your question…</div>}
+        {loading && !streaming && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" />Reviewing your question…</div>}
         {error && <div role="alert" className="text-sm text-destructive"><p>{error}</p><Button variant="outline" size="sm" className="mt-2" onClick={() => void request(messages)}><RotateCcw className="h-4 w-4 mr-2" />Retry</Button></div>}
       </ConversationContent><ConversationScrollButton aria-label="Latest messages" title="Latest messages" /></Conversation>
       <div className="px-3 py-3 border-t border-border bg-secondary rounded-b-lg">
