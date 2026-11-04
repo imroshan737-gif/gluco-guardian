@@ -32,7 +32,7 @@ Deno.serve(async req => {
     let evidenceStatus = "retrieved";
     if (terms) { try { sources = (await retrieveEvidence(terms)).map(s => ({ ...s, summary: s.summary.slice(0, 2500) })); if (!sources.length) evidenceStatus = "no_match"; } catch { evidenceStatus = "unavailable"; } }
     else evidenceStatus = "no_match";
-    const call = () => generateResponse({ model: "openai/gpt-6-astra", reasoning: { effort: "low" }, instructions: instructions(evidenceStatus, sources), input: messages, text: { format: answerFormat } });
+    const call = () => generateResponse({ model: "openai/gpt-6-astra", reasoning: { effort: "none" }, instructions: instructions(evidenceStatus, sources), input: messages, text: { format: answerFormat } });
     let result;
     try { result = await call(); }
     catch (error) {
