@@ -9,6 +9,27 @@ import { streamHealthAnswer, type AssistantSource } from "@/lib/health-assistant
 
 type Source = AssistantSource;
 interface Message { role: "user" | "assistant"; parts: { type: "text"; text: string }[]; sources?: Source[]; evidenceStatus?: string }
+function thinkingSteps(q: string): string[] {
+  const t = q.toLowerCase();
+  const words = t.split(/\s+/).filter(Boolean).length;
+  if (words <= 6) return ["Thinking…"];
+  const topic = /insulin|glucose|sugar|diabet|hypo/.test(t) ? ["Checking glucose and insulin references…"] : /heart|blood pressure|cardio|artery/.test(t) ? ["Looking into heart health sources…"] : /medicine|drug|dose|tablet|side effect/.test(t) ? ["Checking medicine safety information…"] : /pain|symptom|fever|dizzy|sweat/.test(t) ? ["Reviewing the symptoms you described…"] : ["Searching trusted health references…"];
+  const steps = ["Thinking…", "Understanding your question…", ...topic, "Weighing the evidence…"];
+  if (words > 15 || /why|how|difference|compare|explain/.test(t)) steps.push("Connecting the details…", "Putting the answer together…");
+  steps.push("Almost done…");
+  return steps;
+}
+function useThinkingStatus(active: boolean, question: string) {
+  const [index, setIndex] = useState(0);
+  const steps = thinkingSteps(question);
+  useEffect(() => {
+    setIndex(0);
+    if (!active) return;
+    const id = setInterval(() => setIndex(i => Math.min(i + 1, steps.length - 1)), 1600);
+    return () => clearInterval(id);
+  }, [active, question, steps.length]);
+  return steps[Math.min(index, steps.length - 1)];
+}
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -19,6 +40,8 @@ export default function AIAssistant() {
   useEffect(() => { if (open && !loading) panelRef.current?.querySelector("textarea")?.focus(); }, [open, loading, messages]);
   useEffect(() => { if (open) panelRef.current?.querySelector("textarea")?.focus(); }, [open]);
   const [streaming, setStreaming] = useState(false);
+  const lastQuestion = [...messages].reverse().find(m => m.role === "user")?.parts[0]?.text ?? "";
+  const status = useThinkingStatus(loading && !streaming, lastQuestion);
   const request = async (history: Message[]) => {
     setLoading(true); setStreaming(false); setError(""); setMessages(history);
     let started = false;
@@ -59,14 +82,14 @@ export default function AIAssistant() {
           {!!message.sources?.length && <div className="border-t border-border mt-3 pt-2"><p className="text-xs font-semibold mb-1">Sources: MedlinePlus / National Library of Medicine</p>{message.sources.filter(s => { try { const u = new URL(s.url); return u.protocol === "https:" && u.hostname === "medlineplus.gov"; } catch { return false; } }).map(source => <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="block text-xs text-primary underline mt-1">[{source.id}] {source.title}</a>)}<p className="text-[10px] text-muted-foreground mt-2">Informational summary; not endorsed by NLM.</p></div>}
           {message.evidenceStatus === "unavailable" && <p className="text-xs text-muted-foreground mt-2 border-t border-border pt-2">No supporting live reference was retrieved for this reply.</p>}
         </MessageContent></ChatMessage>)}
-        {loading && !streaming && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" />Reviewing your question…</div>}
+        {loading && !streaming && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" /><span>{status}</span></div>}
         {error && <div role="alert" className="text-sm text-destructive"><p>{error}</p><Button variant="outline" size="sm" className="mt-2" onClick={() => void request(messages)}><RotateCcw className="h-4 w-4 mr-2" />Retry</Button></div>}
       </ConversationContent><ConversationScrollButton aria-label="Latest messages" title="Latest messages" /></Conversation>
       <div className="px-3 py-3 border-t border-border bg-secondary rounded-b-lg">
         <PromptInput onSubmit={({ text }) => send(text)} className="[&_[data-slot=input-group]]:bg-background [&_[data-slot=input-group]]:border-primary">
-          <PromptInputTextarea aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-12 text-sm" />
-          <PromptInputFooter className="justify-end">
-            <PromptInputSubmit status={loading ? "submitted" : "ready"} aria-label="Send question" title="Send question" disabled={loading || !input.trim()} className="h-9 w-9 shrink-0"><Send className="h-4 w-4" /></PromptInputSubmit>
+          <PromptInputTextarea aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-0 h-9 max-h-20 py-2 text-sm" />
+          <PromptInputFooter className="justify-end py-1">
+            <PromptInputSubmit status={loading ? "submitted" : "ready"} aria-label="Send question" title="Send question" disabled={loading || !input.trim()} className="h-7 w-7 shrink-0"><Send className="h-4 w-4" /></PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>
       </div>
