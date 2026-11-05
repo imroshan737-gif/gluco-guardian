@@ -85,10 +85,10 @@ export default function AIAssistant() {
         {loading && !streaming && <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin text-primary" /><span>{status}</span></div>}
         {error && <div role="alert" className="text-sm text-destructive"><p>{error}</p><Button variant="outline" size="sm" className="mt-2" onClick={() => void request(messages)}><RotateCcw className="h-4 w-4 mr-2" />Retry</Button></div>}
       </ConversationContent><ConversationScrollButton aria-label="Latest messages" title="Latest messages" /></Conversation>
-      <div className="px-3 py-3 border-t border-border bg-secondary rounded-b-lg">
+      <div className="px-3 py-2 border-t border-border bg-secondary rounded-b-lg">
         <PromptInput onSubmit={({ text }) => send(text)} className="[&_[data-slot=input-group]]:bg-background [&_[data-slot=input-group]]:border-primary">
-          <PromptInputTextarea aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-0 h-9 max-h-20 py-2 text-sm" />
-          <PromptInputFooter className="justify-end py-1">
+          <PromptInputTextarea aria-label="Health question" value={input} maxLength={2000} onChange={e => setInput(e.target.value)} placeholder="Ask a question…" className="min-h-0 h-8 max-h-20 py-1.5 text-sm" />
+          <PromptInputFooter className="justify-end py-0 pb-1 min-h-0">
             <PromptInputSubmit status={loading ? "submitted" : "ready"} aria-label="Send question" title="Send question" disabled={loading || !input.trim()} className="h-7 w-7 shrink-0"><Send className="h-4 w-4" /></PromptInputSubmit>
           </PromptInputFooter>
         </PromptInput>
