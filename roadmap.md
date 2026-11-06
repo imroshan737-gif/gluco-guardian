@@ -21,6 +21,11 @@
 - [x] Replace canned answers with conversation, loading, failure, and retry states.
 - [x] Verify different health questions, follow-ups, and varied off-topic refusals.
 
+# Assistant transparency and evidence
+- [ ] Add an adjacent information control explaining evidence sources, answer generation, and reliability limits.
+- [ ] Expand live evidence retrieval to include suitable PubMed review literature and show verified citations.
+- [ ] Refine chat contrast and source presentation; test the information panel and evidence handling.
+
 # Assistant clarity and quick replies
 - [x] Strengthen chat contrast and composer visibility.
 - [x] Answer standalone greetings and arithmetic instantly; keep health answers evidence-based.
